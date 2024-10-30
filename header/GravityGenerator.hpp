@@ -8,7 +8,7 @@ public:
     GravityGenerator();
     ~GravityGenerator();
 
-    void ApplyForce(std::vector<Rigidbody>& rbs);
+    void ApplyForce(std::vector<Rigidbody*>& rbs);
 private:
     double _g;
 

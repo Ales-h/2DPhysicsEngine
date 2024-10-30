@@ -6,9 +6,10 @@
 
 class ForceGenerator{
 public:
+    ForceGenerator();
     virtual ~ForceGenerator();
 
-    void virtual ApplyForce(std::vector<Rigidbody>& rbs);
+    void virtual ApplyForce(std::vector<Rigidbody*>& rbs);
 };
 
 #endif

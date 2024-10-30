@@ -14,16 +14,15 @@ public:
     void removeRigidbody(Rigidbody* rb);
 
     void addForceGenerator(ForceGenerator* fg);
-
     void removeForceGenerator(ForceGenerator* fg);
 
     void applyForces();
 
-    void step(int step);
+    void step(double dt);
 
 private:
-    std::vector<Rigidbody*> _rigidbodies;
-    std::vector<ForceGenerator*> _forcegenerators;
+    std::vector<Rigidbody*> rigidbodies;
+    std::vector<ForceGenerator*> forcegenerators;
 
 
 };
