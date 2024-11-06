@@ -1,4 +1,4 @@
-#include "../headers/GravityGenerator.hpp"
+#include "../header/GravityGenerator.hpp"
 
 GravityGenerator::GravityGenerator(){
     _g = 9.8;

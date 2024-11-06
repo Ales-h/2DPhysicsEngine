@@ -1,4 +1,4 @@
-#include "../headers/RigidBodySystem.hpp"
+#include "../header/RigidBodySystem.hpp"
 
 RigidbodySystem::RigidbodySystem(){
 }

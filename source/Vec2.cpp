@@ -1,4 +1,4 @@
-#include "../headers/Vec2.hpp"
+#include "../header/Vec2.hpp"
 #include <cmath>
 Vec2::Vec2(double x_, double y_):x(x_), y(y_){}
 

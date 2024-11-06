@@ -1,4 +1,4 @@
-#include "../headers/ForceGenerator.hpp"
+#include "../header/ForceGenerator.hpp"
 
 ForceGenerator::ForceGenerator(){}
 

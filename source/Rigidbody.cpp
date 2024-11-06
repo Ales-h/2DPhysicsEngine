@@ -1,8 +1,8 @@
-#include "../headers/Rigidbody.hpp"
+#include "../header/Rigidbody.hpp"
 
 Rigidbody::Rigidbody(double p_x, double p_y, double v_x, double v_y, double a_x,
                      double a_y, double f_x, double f_y, double _m,
-                     double _theta, double _omega) {
+                     double _theta, double _omega, double _epsilon) {
     pos = {p_x, p_y};
     v = {v_x, v_y};
     a = {a_x, a_y};
@@ -14,6 +14,7 @@ Rigidbody::Rigidbody(double p_x, double p_y, double v_x, double v_y, double a_x,
     }
     theta = _theta;
     omega = _omega;
+    epsilon = _epsilon;
 }
 Rigidbody::~Rigidbody() {
 // free when removed from the RigidbodySystem
