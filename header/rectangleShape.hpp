@@ -13,7 +13,7 @@ public:
     ~rectangleShape();
     void render(Renderer* renderer);
     Vec2 center();
-    std::vector<Vec2> vertices() const;
+    std::vector<Vec2> getVertices() const;
     Vec2 project(const Axis& axis);
 private:
     Rigidbody* rigidbody;
