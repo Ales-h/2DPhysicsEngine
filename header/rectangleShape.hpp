@@ -1,15 +1,22 @@
 #ifndef PHYSOLVER_RECTANGLE_SHAPE_HPP
 #define PHYSOLVER_RECTANGLE_SHAPE_HPP
 
+#include <vector>
 #include "Shape.hpp"
 
 class rectangleShape: public Shape {
 public:
-    int
+    double width;
+    double height;
 
-    rectangleShape();
+    rectangleShape(double _w = 1, double _h = 1);
     ~rectangleShape();
-    virtual void render(Renderer* renderer);
+    void render(Renderer* renderer);
+    Vec2 center();
+    std::vector<Vec2> vertices() const;
+    Vec2 project(const Axis& axis);
+private:
+    Rigidbody* rigidbody;
 };
 
 #endif
