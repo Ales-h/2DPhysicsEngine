@@ -14,7 +14,9 @@ public:
     void render(Renderer* renderer);
     Vec2 center();
     std::vector<Vec2> getVertices() const;
+    std::vector<Axis> getAxes() const;
     Vec2 project(const Axis& axis);
+
 private:
     Rigidbody* rigidbody;
 };

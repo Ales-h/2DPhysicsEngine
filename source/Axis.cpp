@@ -5,6 +5,9 @@
 Axis::Axis(double _x, double _y): x(_x), y(_y){
     normalize();
 }
+Axis::Axis(Vec2 v): x(v.x), y(v.y){
+    normalize();
+};
 
 double Axis::getX() const{
     return x;

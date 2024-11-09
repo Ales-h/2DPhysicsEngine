@@ -18,10 +18,10 @@ Vec2 rectangleShape::center(){
 std::vector<Vec2> rectangleShape::getVertices() const {
     std::vector<Vec2> vertices(4);
     std::vector<Vec2> local = {
-        Vec2{-0.5*width, -0.5*height},
-        Vec2{0.5*width, -0.5*height},
-        Vec2{-0.5*width, 0.5*height},
-        Vec2{0.5*width, 0.5*height},
+        Vec2{-0.5*width, -0.5*height}, //bottom left
+        Vec2{0.5*width, -0.5*height}, //botom right
+        Vec2{0.5*width, 0.5*height}, // top right
+        Vec2{-0.5*width, 0.5*height} // top left
     };
     for(int i = 0; i < 4; ++i){
         double xlocal = local[i].x;
@@ -30,9 +30,22 @@ std::vector<Vec2> rectangleShape::getVertices() const {
         vertices[i].y = rigidbody->getY() + (std::cos(rigidbody->theta) * ylocal - std::sin(rigidbody->theta * ylocal));
     }
     return vertices;
-
 }
 
+std::vector<Axis> rectangleShape::getAxes() const{
+    std::vector<Axis> axes;
+    std::vector<Vec2> vertices = getVertices();
+
+    for(int i = 0; i < 4; i+=2){
+        Vec2 p1 = vertices[i];
+        Vec2 p2 = vertices[i+1];
+
+        Vec2 edge = p2 - p1;
+        axes.push_back(Axis(edge.normal()));
+    }
+    return axes;
+
+}
 //project the shape onto an axis and returns an interval
 Vec2 rectangleShape::project(const Axis& axis){
     std::vector<Vec2> vertices = getVertices();

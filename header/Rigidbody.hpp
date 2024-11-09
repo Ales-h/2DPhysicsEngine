@@ -15,6 +15,8 @@ class Rigidbody {
     double omega;    // angular velocity; uhlova rychlost
     double epsilon;  // angular acceleration; uhlove zrychleni
 
+    int idx;
+
     Rigidbody(double p_x = 0, double p_y = 0, double v_x = 0, double v_y = 0,
               double a_x = 0, double a_y = 0, double f_x = 0, double f_y = 0,
               double _m = 1, double _theta = 0, double _omega = 0,

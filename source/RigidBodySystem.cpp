@@ -8,9 +8,15 @@ RigidbodySystem::~RigidbodySystem(){
 }
 
 void RigidbodySystem::addRigidbody(Rigidbody* rb){
+    rigidbodies.emplace_back(rb);
+    rb->idx = rigidbodies.size()-1;
 }
 
 void RigidbodySystem::removeRigidbody(Rigidbody* rb){
+    // swap with last element and resize
+    rigidbodies[rb->idx] = rigidbodies.back();
+    rigidbodies[rb->idx]->idx = rb->idx;
+    rigidbodies.resize(rigidbodies.size() - 1);
 }
 
 void RigidbodySystem::addForceGenerator(ForceGenerator* fg){
