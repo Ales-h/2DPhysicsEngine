@@ -8,6 +8,7 @@ class rectangleShape: public Shape {
 public:
     double width;
     double height;
+    Rigidbody* rigidbody;
 
     rectangleShape(double _w = 1, double _h = 1);
     ~rectangleShape();
@@ -16,9 +17,6 @@ public:
     std::vector<Vec2> getVertices() const;
     std::vector<Axis> getAxes() const;
     Vec2 project(const Axis& axis);
-
-private:
-    Rigidbody* rigidbody;
 };
 
 #endif
