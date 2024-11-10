@@ -2,7 +2,6 @@
 #define PHYSOLVER_OBJECT_HPP
 
 #include "Shape.hpp"
-#include "RigidbodySystem.hpp"
 #include "Application.hpp"
 
 class Object {

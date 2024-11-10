@@ -2,6 +2,7 @@
 #define PHYSOLVER_SHAPE_HPP
 #include "Rigidbody.hpp"
 #include "Axis.hpp"
+#include "Renderer.hpp"
 
 class Shape{
 public:
