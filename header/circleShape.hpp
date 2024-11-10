@@ -11,8 +11,8 @@ public:
     circleShape(double _radius = 1);
     ~circleShape();
     void render(Renderer* renderer);
-    Vec2 center();
-    Vec2 project(const Axis& axis);
+    Vec2 center() const;
+    Vec2 project(const Axis& axis) const;
 };
 
 #endif

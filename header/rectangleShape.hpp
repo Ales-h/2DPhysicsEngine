@@ -15,8 +15,9 @@ public:
     void render(Renderer* renderer);
     Vec2 center();
     std::vector<Vec2> getVertices() const;
+    Vec2 closestVertex(const Vec2 p) const;
     std::vector<Axis> getAxes() const;
-    Vec2 project(const Axis& axis);
+    Vec2 project(const Axis& axis) const;
 };
 
 #endif

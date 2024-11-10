@@ -32,6 +32,20 @@ std::vector<Vec2> rectangleShape::getVertices() const {
     return vertices;
 }
 
+Vec2 rectangleShape::closestVertex(const Vec2 p) const{
+    std::vector<Vec2> vertices = getVertices();
+    Vec2 closest = vertices[0];
+    double minDistance = (vertices[0] - p).magnitude();
+    for(int i = 0; i < vertices.size(); ++i){
+        double distance = (vertices[i] - p).magnitude();
+        if(distance < minDistance){
+            minDistance = distance;
+            closest = vertices[i];
+        }
+    }
+    return closest;
+}
+
 std::vector<Axis> rectangleShape::getAxes() const{
     std::vector<Axis> axes;
     std::vector<Vec2> vertices = getVertices();
@@ -47,7 +61,7 @@ std::vector<Axis> rectangleShape::getAxes() const{
 
 }
 //project the shape onto an axis and returns an interval
-Vec2 rectangleShape::project(const Axis& axis){
+Vec2 rectangleShape::project(const Axis& axis) const{
     std::vector<Vec2> vertices = getVertices();
     std::vector<double> projections(4);
     for(auto v : vertices){

@@ -45,6 +45,9 @@ void RigidbodySystem::step(double dt){
         rb->v += rb->a * dt;
         rb->pos += rb->v * dt;
 
+        rb->omega += rb->epsilon * dt;
+        rb->theta += rb->omega * dt;
+
         rb->f = {0, 0};
     }
 }
