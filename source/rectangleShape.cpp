@@ -9,7 +9,9 @@ rectangleShape::rectangleShape(double _w, double _h){
 
 rectangleShape::~rectangleShape(){}
 
-void rectangleShape::render(Renderer* renderer){}
+void rectangleShape::render(Renderer* renderer, int color){
+    renderer->drawRect(getVertices(), color);
+}
 
 Vec2 rectangleShape::center(){
     return rigidbody->pos;

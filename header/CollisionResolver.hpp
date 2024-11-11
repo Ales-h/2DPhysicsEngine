@@ -3,7 +3,9 @@
 
 #include "circleShape.hpp"
 #include "rectangleShape.hpp"
-#include "Application.hpp"
+#include "Object.hpp"
+
+class Application;
 
 class CollisionResolver {
 public:
@@ -18,8 +20,11 @@ public:
     Vec2 detectCollision(const rectangleShape* rect, const circleShape* circle);
     Vec2 detectCollision(const rectangleShape* r1, const rectangleShape* r2);
     Vec2 detectCollision(const circleShape* c2, const circleShape* c1);
+    Vec2 detectCollision(const Shape* shape1, const Shape* shape2);
 
     void resolveCollision();
+
+    void resolveMTV(Object* object1, Object* object2, Vec2 mtv);
 
     void checkCollisions(Application* app);
 

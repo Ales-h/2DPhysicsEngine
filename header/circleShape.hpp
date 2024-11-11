@@ -10,7 +10,7 @@ public:
 
     circleShape(double _radius = 1);
     ~circleShape();
-    void render(Renderer* renderer);
+    void render(Renderer* renderer, int color);
     Vec2 center() const;
     Vec2 project(const Axis& axis) const;
 };

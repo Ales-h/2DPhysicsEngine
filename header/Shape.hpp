@@ -10,7 +10,7 @@ public:
 
     Shape();
     ~Shape();
-    virtual void render(Renderer* renderer);
+    virtual void render(Renderer* renderer, int color);
     virtual Vec2 project(Axis axis);
 };
 

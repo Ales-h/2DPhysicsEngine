@@ -12,7 +12,7 @@ public:
 
     rectangleShape(double _w = 1, double _h = 1);
     ~rectangleShape();
-    void render(Renderer* renderer);
+    void render(Renderer* renderer, int color);
     Vec2 center();
     std::vector<Vec2> getVertices() const;
     Vec2 closestVertex(const Vec2 p) const;

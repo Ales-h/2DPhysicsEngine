@@ -1,7 +1,10 @@
 #include "../header/CollisionResolver.hpp"
+#include "../header/Application.hpp"
+
 
 #include <algorithm>
 #include <limits>
+#include <stdexcept>
 
 CollisionResolver::CollisionResolver() {}
 
@@ -95,8 +98,8 @@ Vec2 CollisionResolver::detectCollision(const rectangleShape* r1,
 
 }
 
-Vec2 CollisionResolver::detectCollision(const circleShape* c2,
-                                        const circleShape* c1) {
+Vec2 CollisionResolver::detectCollision(const circleShape* c1,
+                                        const circleShape* c2) {
     Vec2 distanceVec = c1->center() - c2->center();
     if(distanceVec.magnitude() > c1->radius + c2->radius){
         return Vec2(0, 0);
@@ -108,8 +111,74 @@ Vec2 CollisionResolver::detectCollision(const circleShape* c2,
 
 }
 
-void resolveCollision() {}
+// Quick fix - refactor later into a shape/collider function
+Vec2 CollisionResolver::detectCollision(const Shape* shape1, const Shape* shape2) {
+    if (auto circle = dynamic_cast<const circleShape*>(shape1)) {
+        if (auto rect = dynamic_cast<const rectangleShape*>(shape2)) {
+            return detectCollision(circle, rect);
+        }
+    }
+    else if (auto rect = dynamic_cast<const rectangleShape*>(shape1)) {
+        if (auto circle = dynamic_cast<const circleShape*>(shape2)) {
+            return detectCollision(rect, circle);
+        }
+    }
+    else if (auto c1= dynamic_cast<const circleShape*>(shape1)) {
+        if (auto c2 = dynamic_cast<const circleShape*>(shape2)) {
+            return detectCollision(c1, c2);
+        }
+    }
+    else if (auto r1= dynamic_cast<const rectangleShape*>(shape1)) {
+        if (auto r2 = dynamic_cast<const rectangleShape*>(shape2)) {
+            return detectCollision(r1, r2);
+        }
+    }
+    throw std::runtime_error("Function for collision detection not found");
+    return Vec2(0, 0);
+}
 
-void checkCollisions(Application* app) {
+void CollisionResolver::resolveCollision() {
+// TODO
+}
 
+// TODO Refactor
+void CollisionResolver::resolveMTV(Object* object1, Object* object2, Vec2 mtv) {
+    bool isFixed1 = object1->isFixed();
+    bool isFixed2 = object2->isFixed();
+
+    Vec2 direction = object2->shape->rigidbody->pos - object1->shape->rigidbody->pos;
+
+    if ((mtv.dot(direction)) < 0) {
+        mtv = -mtv;
+    }
+
+    if (isFixed1 && !isFixed2) {
+        object2->translate(mtv);
+    } else if (!isFixed1 && isFixed2) {
+        object1->translate(-mtv);
+    } else if (!isFixed1 && !isFixed2) {
+        double mass1 = object1->shape->rigidbody->m;
+        double mass2 = object2->shape->rigidbody->m;
+        double totalMass = mass1 + mass2;
+
+        Vec2 mtv1 = mtv * (mass2 / totalMass);
+        Vec2 mtv2 = mtv * (mass1 / totalMass);
+
+        object1->translate(-mtv1);
+        object2->translate(mtv2);
+    }
+}
+
+void CollisionResolver::checkCollisions(Application* app) {
+    for(int i = 0; i < app->objects.size(); ++i){
+        Object* object1 = app->objects[i];
+        for(int j = i+1; j < app->objects.size(); ++j){
+            Object* object2 = app->objects[j];
+            Vec2 mtv = detectCollision(object1->shape, object2->shape);
+            if(mtv.x == 0 && mtv.y == 0) {
+                continue;
+            }
+            resolveMTV(object1, object2, mtv);
+        }
+    }
 }

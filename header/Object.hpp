@@ -2,7 +2,8 @@
 #define PHYSOLVER_OBJECT_HPP
 
 #include "Shape.hpp"
-#include "Application.hpp"
+
+class Application;
 
 class Object {
 public:
@@ -20,11 +21,14 @@ public:
     Shape* shape;
     Type type;
     Color color;
+    int idx;
 
     Object();
     ~Object();
     void init(Application* app, Shape* _shape, Rigidbody* rb, Type t = DYNAMIC, Color c = BLUE);
     void render(Renderer* renderer);
+    bool isFixed();
+    void translate(const Vec2& mtv);
     virtual void onClick();
 };
 

@@ -8,11 +8,13 @@ public:
     Vec2 operator+(const Vec2& v) const;
     Vec2& operator+=(const Vec2& v);
     Vec2 operator-(const Vec2& v) const;
+    Vec2 operator-() const;
     Vec2 operator*(const Vec2& v) const;
     Vec2 operator*(const double& a) const;
     Vec2 operator/(const double& a) const;
     Vec2 normal() const;
     double magnitude() const;
+    double dot(const Vec2& v);
 };
 
 #endif
