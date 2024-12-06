@@ -12,6 +12,7 @@ public:
     ~Shape();
     virtual void render(Renderer* renderer, int color);
     virtual Vec2 project(Axis axis);
+    virtual double momentOfInertia();
 };
 
 #endif

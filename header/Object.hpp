@@ -29,6 +29,7 @@ public:
     void render(Renderer* renderer);
     bool isFixed();
     void translate(const Vec2& mtv);
+    double inverseInertia();
     virtual void onClick();
 };
 

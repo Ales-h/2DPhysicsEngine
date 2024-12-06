@@ -1,4 +1,5 @@
 #include "../header/RigidBodySystem.hpp"
+#include <iostream>
 
 RigidbodySystem::RigidbodySystem(){
 }
@@ -20,6 +21,7 @@ void RigidbodySystem::removeRigidbody(Rigidbody* rb){
 }
 
 void RigidbodySystem::addForceGenerator(ForceGenerator* fg){
+    forcegenerators.emplace_back(fg);
 }
 
 void RigidbodySystem::removeForceGenerator(ForceGenerator* fg){
@@ -40,8 +42,10 @@ void RigidbodySystem::step(double dt){
 
     for(int i = 0; i < s; ++i){
         Rigidbody* rb = rigidbodies[i];
+        //std::cout << "position: " << rb->getX() << " " << rb->getY() << "\n";
+        //std::cout << "velocity: " << rb->v.x << " " << rb->v.y << "\n";
 
-        rb->a += rb->f / rb->m;
+        rb->a = rb->f / rb->m;
         rb->v += rb->a * dt;
         rb->pos += rb->v * dt;
 

@@ -19,3 +19,11 @@ Rigidbody::Rigidbody(double p_x, double p_y, double v_x, double v_y, double a_x,
 Rigidbody::~Rigidbody() {
 // free when removed from the RigidbodySystem
 }
+
+double Rigidbody::getX()const{
+    return pos.x;
+}
+
+double Rigidbody::getY()const{
+    return pos.y;
+}

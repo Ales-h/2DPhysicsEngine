@@ -1,7 +1,8 @@
 #include "../header/GravityGenerator.hpp"
+#include <iostream>
 
 GravityGenerator::GravityGenerator(){
-    _g = 9.8;
+    _g = -9.8;
 }
 
 GravityGenerator::~GravityGenerator(){}

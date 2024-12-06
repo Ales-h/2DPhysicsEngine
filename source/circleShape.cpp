@@ -1,4 +1,5 @@
 #include "../header/circleShape.hpp"
+#include <iostream>
 
 circleShape::circleShape(double _radius) {
     radius = _radius;
@@ -7,7 +8,7 @@ circleShape::circleShape(double _radius) {
 circleShape::~circleShape() {
 }
 
-void circleShape::render(Renderer* renderer){
+void circleShape::render(Renderer* renderer, int color){
 }
 
 Vec2 circleShape::center() const{
@@ -18,4 +19,8 @@ Vec2 circleShape::project(const Axis& axis) const{
     const double proj = (rigidbody->getX() * axis.getX() + rigidbody->getY() * axis.getY());
 
     return Vec2(proj - radius, proj + radius);
+}
+// TODO
+double circleShape::momentOfInertia(){
+    return 0;
 }

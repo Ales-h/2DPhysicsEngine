@@ -1,6 +1,7 @@
 #ifndef PHYSOLVER_APPLICATION_HPP
 #define PHYSOLVER_APPLICATION_HPP
 
+#include <SDL.h>
 #include "Object.hpp"
 #include "RigidBodySystem.hpp"
 #include "CollisionResolver.hpp"
@@ -17,6 +18,8 @@ public:
     ~Application();
 
     void init();
+
+    void render();
 
 
     void addObject(Object* object);

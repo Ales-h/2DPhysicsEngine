@@ -13,6 +13,7 @@ public:
     void render(Renderer* renderer, int color);
     Vec2 center() const;
     Vec2 project(const Axis& axis) const;
+    double momentOfInertia(); // TODO
 };
 
 #endif
