@@ -10,10 +10,10 @@ public:
 
     circleShape(double _radius = 1);
     ~circleShape();
-    void render(Renderer* renderer, int color);
+    void render(Renderer* renderer, int color) override;
     Vec2 center() const;
     Vec2 project(const Axis& axis) const;
-    double momentOfInertia(); // TODO
+    double momentOfInertia() override; // TODO
 };
 
 #endif

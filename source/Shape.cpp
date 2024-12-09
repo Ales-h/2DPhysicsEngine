@@ -6,7 +6,7 @@ Shape::Shape(){}
 Shape::~Shape(){}
 
 void Shape::render(Renderer* renderer, int color){}
-Vec2 Shape::project(Axis axis){
+Vec2 Shape::project(Axis axis) const{
     throw std::runtime_error("trying to project a classic shape");
     return Vec2(0, 0);
 }

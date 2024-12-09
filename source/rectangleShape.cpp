@@ -11,6 +11,7 @@ rectangleShape::rectangleShape(double _w, double _h, int _id){
     id = _id;
 }
 
+
 rectangleShape::~rectangleShape(){}
 
 void rectangleShape::render(Renderer* renderer, int color){
@@ -22,6 +23,7 @@ Vec2 rectangleShape::center(){
     return rigidbody->pos;
 }
 
+// TODO refactor with array, vector is not needed
 std::vector<Vec2> rectangleShape::getVertices() const {
     std::vector<Vec2> vertices(4);
     std::vector<Vec2> local = {
@@ -30,6 +32,7 @@ std::vector<Vec2> rectangleShape::getVertices() const {
         Vec2{0.5*width, 0.5*height}, // top right
         Vec2{-0.5*width, 0.5*height} // top left
     };
+    double radians = rigidbody->theta;
 
     if(rigidbody == nullptr){
     throw std::runtime_error("rigid is null??");
@@ -38,8 +41,8 @@ std::vector<Vec2> rectangleShape::getVertices() const {
     for(int i = 0; i < 4; ++i){
         double xlocal = local[i].x;
         double ylocal = local[i].y;
-        vertices[i].x = rigidbody->getX() + (std::cos(rigidbody->theta) * xlocal - std::sin(rigidbody->theta) * ylocal);
-        vertices[i].y = rigidbody->getY() + (std::sin(rigidbody->theta) * xlocal + std::cos(rigidbody->theta) * ylocal);
+        vertices[i].x = rigidbody->getX() + (std::cos(radians) * xlocal - std::sin(radians) * ylocal);
+        vertices[i].y = rigidbody->getY() + (std::sin(radians) * xlocal + std::cos(radians) * ylocal);
     }
     return vertices;
 }

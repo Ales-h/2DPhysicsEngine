@@ -62,7 +62,6 @@ void Application::run() {
 
         // Render
         render();
-        objects[1]->render(renderer);
         SDL_RenderPresent(renderer->m_renderer);
 
         Uint64 end = SDL_GetPerformanceCounter();

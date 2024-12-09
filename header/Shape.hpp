@@ -11,7 +11,7 @@ public:
     Shape();
     ~Shape();
     virtual void render(Renderer* renderer, int color);
-    virtual Vec2 project(Axis axis);
+    virtual Vec2 project(Axis axis) const;
     virtual double momentOfInertia();
 };
 

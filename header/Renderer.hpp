@@ -10,11 +10,17 @@ public:
 
     Renderer(SDL_Renderer* renderer);
     SDL_Color getColor(int c);
-    void drawRect(std::vector<Vec2>& vertices, int color);
-    void drawCircle(Vec2 pos, int radius, int color);
+
+    int windowX(const double& x);
+    int windowY(const double& y);
+    int windowLength(const double& a);
+
+    void drawRect(std::vector<Vec2>& vertices, int c);
+    void drawCircle(Vec2 pos, double radius, int c);
     void drawCollisionPoints(std::vector<Vec2>& cps);
 
 private:
+    // TODO refactor with array, vector is not needed
     std::vector<SDL_Color> m_colors;
 
 };

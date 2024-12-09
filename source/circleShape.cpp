@@ -9,6 +9,7 @@ circleShape::~circleShape() {
 }
 
 void circleShape::render(Renderer* renderer, int color){
+    renderer->drawCircle(rigidbody->pos, radius, color);
 }
 
 Vec2 circleShape::center() const{
@@ -22,5 +23,5 @@ Vec2 circleShape::project(const Axis& axis) const{
 }
 // TODO
 double circleShape::momentOfInertia(){
-    return 0;
+    return 1./2. * rigidbody->m * radius * radius;
 }

@@ -1,5 +1,6 @@
 #include "../header/CollisionResolver.hpp"
 
+#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <limits>
@@ -11,7 +12,7 @@
 #include "../header/Math.hpp"
 #include "../header/rectangleShape.hpp"
 
-CollisionResolver::CollisionResolver() { _e = 0.5; }
+CollisionResolver::CollisionResolver() { _e = 0.3; }
 
 CollisionResolver::~CollisionResolver() {}
 
@@ -98,8 +99,7 @@ Vec2 CollisionResolver::detectCollision(const rectangleShape* r1,
     return Vec2(mtvAxis.getX() * minOverlap, mtvAxis.getY() * minOverlap);
 }
 
-Vec2 CollisionResolver::detectCollision(const circleShape* c1,
-                                        const circleShape* c2) {
+Vec2 CollisionResolver::detectCollision(const circleShape* c1, const circleShape* c2) {
     Vec2 distanceVec = c1->center() - c2->center();
     if (distanceVec.magnitude() > c1->radius + c2->radius) {
         return Vec2(0, 0);
@@ -111,8 +111,7 @@ Vec2 CollisionResolver::detectCollision(const circleShape* c1,
     }
 }
 
-Vec2 CollisionResolver::detectCollision(const Shape* shape1,
-                                        const Shape* shape2) {
+Vec2 CollisionResolver::detectCollision(const Shape* shape1, const Shape* shape2) {
     if (auto circle1 = dynamic_cast<const circleShape*>(shape1)) {
         if (auto circle2 = dynamic_cast<const circleShape*>(shape2)) {
             return detectCollision(circle1, circle2);
@@ -157,11 +156,13 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         Vec2 AngLinVelocityA = raNormal * rbA->omega;
         Vec2 AngLinVelocityB = rbNormal * rbB->omega;
 
+        Vec2 relativeVelocity = (rbB->v + AngLinVelocityB) - (rbA->v + AngLinVelocityA);
 
-        Vec2 relativeVelocity =
-            (rbB->v + AngLinVelocityB) - (rbA->v + AngLinVelocityA);
+        double vAlongNormal = relativeVelocity.dot(normal);
 
-        std::cout << relativeVelocity << "relativeVel\n";
+        if (vAlongNormal > 0) {
+            return;
+        }
 
         double raNdotProd = raNormal.dot(normal);
         double rbNdotProd = rbNormal.dot(normal);
@@ -171,8 +172,7 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         double inverseMassSum = (1 / rbA->m) + (1 / rbB->m);
         std::cout << inverseMassSum << " " << "inverseMass\n";
 
-        j /= inverseMassSum +
-             (raNdotProd * raNdotProd) * objectA->inverseInertia() +
+        j /= inverseMassSum + (raNdotProd * raNdotProd) * objectA->inverseInertia() +
              (rbNdotProd * rbNdotProd) * objectB->inverseInertia();
         std::cout << j << " " << "j2\n";
         j /= static_cast<double>(cps.size());
@@ -187,17 +187,15 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         Vec2 impulse = impulses[i];
         Vec2 ra = raArray[i];
         Vec2 rb = rbArray[i];
-        std::cout << -impulse / rbA->m << " A velocity\n";
         rbA->v += -impulse / rbA->m;
-        std::cout << -impulse.dot(ra) << " cross " << objectA->inverseInertia() << " A inverseI\n";
-        rbA->omega += -impulse.dot(ra) * objectA->inverseInertia();
-        std::cout <<  rbA->omega << " B omega\n";
+        rbA->omega += -ra.cross(impulse) * objectA->inverseInertia() * 0.95;
+
         rbB->v += impulse / rbB->m;
-        std::cout << -impulse.dot(rb) << " cross " << objectB->inverseInertia() << " B inverse Inertia\n";
-        rbB->omega += (impulse.dot(rb) * objectB->inverseInertia());
-        std::cout << impulse / rbB->m << " B velocity\n";
-        std::cout <<  rbB->omega << " B omega\n";
+        rbB->omega += (rb.cross(impulse) * objectB->inverseInertia()) * 0.95;
+        std::cout << "THETA" << rbB->theta * 180 / M_PI << "\n";
     }
+    // rbA->checkRestingPosition();
+    // rbB->checkRestingPosition();
 }
 
 // TODO Refactor
@@ -209,8 +207,7 @@ void CollisionResolver::resolveMTV(Collision* collision) {
     bool isFixed1 = objectA->isFixed();
     bool isFixed2 = objectB->isFixed();
 
-    Vec2 direction =
-        objectB->shape->rigidbody->pos - objectA->shape->rigidbody->pos;
+    Vec2 direction = objectB->shape->rigidbody->pos - objectA->shape->rigidbody->pos;
 
     if ((mtv.dot(direction)) < 0) {
         mtv = -mtv;
@@ -274,17 +271,18 @@ void CollisionResolver::getCollisionPoints(Collision* collision) {
     std::tuple<int, Vec2, Vec2> tuple;
     if (auto circle1 = dynamic_cast<const circleShape*>(shapeA)) {
         if (auto circle2 = dynamic_cast<const circleShape*>(shapeB)) {
-            return;
+            tuple = getCollisionPoint(circle1->center(), circle1->radius,
+                                      circle2->center(), circle2->radius);
         } else if (auto rect2 = dynamic_cast<const rectangleShape*>(shapeB)) {
-            return;
+            tuple = getCollisionPoint(circle1->center(), circle1->radius,
+                                      rect2->getVertices());
         }
     } else if (auto rect1 = dynamic_cast<const rectangleShape*>(shapeA)) {
         if (auto rect2 = dynamic_cast<const rectangleShape*>(shapeB)) {
-            std::cout << 1;
-            tuple =
-                getCollisionPoint(rect1->getVertices(), rect2->getVertices());
+            tuple = getCollisionPoint(rect1->getVertices(), rect2->getVertices());
         } else if (auto circle2 = dynamic_cast<const circleShape*>(shapeB)) {
-            return;
+            tuple = getCollisionPoint(circle2->center(), circle2->radius,
+                                      rect1->getVertices());
         }
     }
     int cpCount = std::get<0>(tuple);
@@ -298,6 +296,39 @@ void CollisionResolver::getCollisionPoints(Collision* collision) {
     }
 }
 
+// Circle to Circle collision points
+std::tuple<int, Vec2, Vec2> CollisionResolver::getCollisionPoint(const Vec2& centerA,
+                                                                 const double& radiusA,
+                                                                 const Vec2& centerB,
+                                                                 const double& radiusB) {
+    Vec2 ab = centerB - centerA;
+    Vec2 dir = ab.normalize();
+    Vec2 cp = ab * dir * radiusA;
+
+    return std::tuple<int, Vec2, Vec2>(1, cp, Vec2::zero());
+}
+
+std::tuple<int, Vec2, Vec2> CollisionResolver::getCollisionPoint(
+    const Vec2& centerA, const double& radiusA, const std::vector<Vec2>& verticesB) {
+    Vec2 cp = Vec2::zero();
+    double minDist = std::numeric_limits<double>::max();
+
+    for (int i = 0; i < verticesB.size(); ++i) {
+        Vec2 va = verticesB[i];
+        Vec2 vb = verticesB[(i + 1) % verticesB.size()];
+        auto pair = pointSegmentDistance(centerA, va, vb);
+        double sqDist = pair.first;
+        Vec2 contact = pair.second;
+
+        if (sqDist < minDist) {
+            minDist = sqDist;
+            cp = contact;
+        }
+    }
+    return std::tuple<int, Vec2, Vec2>(1, cp, Vec2::zero());
+}
+
+// polygon to polygon collision points (only tested on rectangles now)
 std::tuple<int, Vec2, Vec2> CollisionResolver::getCollisionPoint(
     const std::vector<Vec2>& verticesA, const std::vector<Vec2>& verticesB) {
     double minDist = std::numeric_limits<double>::max();
@@ -356,9 +387,9 @@ std::tuple<int, Vec2, Vec2> CollisionResolver::getCollisionPoint(
     return std::tuple<int, Vec2, Vec2>(cpCount, contact1, contact2);
 }
 
-std::pair<double, Vec2> CollisionResolver::pointSegmentDistance(Vec2& p,
-                                                                Vec2& a,
-                                                                Vec2& b) {
+std::pair<double, Vec2> CollisionResolver::pointSegmentDistance(const Vec2& p,
+                                                                const Vec2& a,
+                                                                const Vec2& b) {
     Vec2 ab = b - a;
     Vec2 ap = p - a;
     Vec2 cp = Vec2::zero();
@@ -375,7 +406,6 @@ std::pair<double, Vec2> CollisionResolver::pointSegmentDistance(Vec2& p,
         cp = a + ab * d;
     }
     Vec2 edge = p - cp;
-    return std::pair<double, Vec2>(
-        edge.dot(edge),
-        cp);  // returning squared distance to skip square root operation
+    return std::pair<double, Vec2>(edge.dot(edge), cp);
+    // returning squared distance to skip square root operation
 }

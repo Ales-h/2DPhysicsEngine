@@ -25,6 +25,7 @@ class Rigidbody {
 
     double getX() const;
     double getY() const;
+    void checkRestingPosition();
 };
 
 #endif
