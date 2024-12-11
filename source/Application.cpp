@@ -2,14 +2,13 @@
 #include <iostream>
 #include <stdexcept>
 #include "GravityGenerator.hpp"
+#include "Object.hpp"
 
 Application::Application(SDL_Renderer* _renderer, int _fps = 60) {
     renderer = new Renderer(_renderer);
     fps = _fps;
 
     rbSystem = new RigidbodySystem();
-    GravityGenerator* gGenerator = new GravityGenerator();
-    rbSystem->addForceGenerator(gGenerator);
 
     cResolver = new CollisionResolver();
 }
@@ -24,6 +23,9 @@ void Application::render() {
     SDL_RenderClear(renderer->m_renderer);
     for (int i = 0; i < objects.size(); ++i) {
         objects[i]->render(renderer);
+        if(SDL_GetPerformanceCounter() - startTime > 1000 && objects[i]->type != Object::FIXED && objects[i]->shape->rigidbody->v != Vec2::zero()){
+        objects[i]->shape->rigidbody->renderVelocityVector(renderer);
+        }
     }
     cResolver->renderCollisionPoints(renderer);
 }
@@ -37,6 +39,7 @@ void Application::run() {
     double accumulator = 0.0;
 
     Uint64 start = SDL_GetPerformanceCounter();
+    startTime = start;
     SDL_Event e;
     while (isRunning) {
         while (SDL_PollEvent(&e)) {

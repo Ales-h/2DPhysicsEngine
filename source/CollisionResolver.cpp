@@ -12,7 +12,7 @@
 #include "../header/Math.hpp"
 #include "../header/rectangleShape.hpp"
 
-CollisionResolver::CollisionResolver() { _e = 0.3; }
+CollisionResolver::CollisionResolver() { _e = 0.8; }
 
 CollisionResolver::~CollisionResolver() {}
 
@@ -160,9 +160,6 @@ void CollisionResolver::resolveCollision(Collision* collision) {
 
         double vAlongNormal = relativeVelocity.dot(normal);
 
-        if (vAlongNormal > 0) {
-            return;
-        }
 
         double raNdotProd = raNormal.dot(normal);
         double rbNdotProd = rbNormal.dot(normal);
@@ -188,10 +185,10 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         Vec2 ra = raArray[i];
         Vec2 rb = rbArray[i];
         rbA->v += -impulse / rbA->m;
-        rbA->omega += -ra.cross(impulse) * objectA->inverseInertia() * 0.95;
+        rbA->omega += -ra.cross(impulse) * objectA->inverseInertia();
 
         rbB->v += impulse / rbB->m;
-        rbB->omega += (rb.cross(impulse) * objectB->inverseInertia()) * 0.95;
+        rbB->omega += (rb.cross(impulse) * objectB->inverseInertia());
         std::cout << "THETA" << rbB->theta * 180 / M_PI << "\n";
     }
     // rbA->checkRestingPosition();

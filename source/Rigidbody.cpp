@@ -1,4 +1,5 @@
 #include "../header/Rigidbody.hpp"
+#include <string>
 
 const double LINEAR_RESTING_THRESHOLD = 0.001;
 const double ANGULAR_RESTING_THRESHOLD = 0.0005;
@@ -37,4 +38,10 @@ void Rigidbody::checkRestingPosition() {
     if (abs(omega) < ANGULAR_RESTING_THRESHOLD) {
         omega = 0.0;
     }
+}
+
+void Rigidbody::renderVelocityVector(Renderer* renderer){
+    renderer->drawArrow(pos, v, v.magnitude()/2);
+    std::string t = std::to_string(v.magnitude());
+    //renderer->renderText(pos, t);
 }

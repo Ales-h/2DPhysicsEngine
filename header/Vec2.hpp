@@ -14,6 +14,7 @@ public:
     Vec2 operator*(const Vec2& v) const;
     Vec2 operator*(const double& a) const;
     Vec2 operator/(const double& a) const;
+    bool operator!=(const Vec2& v) const;
     static Vec2 zero();
     Vec2 normal() const;
     Vec2 normalize() const;

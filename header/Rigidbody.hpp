@@ -2,6 +2,7 @@
 #define PHYSOLVER_RIGIDBODY_HPP
 
 #include "Vec2.hpp"
+#include "Renderer.hpp"
 
 class Rigidbody {
    public:
@@ -26,6 +27,7 @@ class Rigidbody {
     double getX() const;
     double getY() const;
     void checkRestingPosition();
+    void renderVelocityVector(Renderer* renderer);
 };
 
 #endif

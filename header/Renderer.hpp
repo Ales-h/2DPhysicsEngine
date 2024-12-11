@@ -18,6 +18,8 @@ public:
     void drawRect(std::vector<Vec2>& vertices, int c);
     void drawCircle(Vec2 pos, double radius, int c);
     void drawCollisionPoints(std::vector<Vec2>& cps);
+    void drawArrow(Vec2 pos, Vec2 dir, double magnitude);
+    //void renderText(const Vec2& pos, std::string text);
 
 private:
     // TODO refactor with array, vector is not needed

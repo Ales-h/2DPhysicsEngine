@@ -39,6 +39,10 @@ Vec2 Vec2::operator/(const double& a) const {
     return Vec2(x / a, y / a);
 }
 
+bool Vec2::operator!=(const Vec2& v) const {
+    return (x != v.x) && (y !=v.y);
+}
+
 Vec2 Vec2::zero(){
     return Vec2(0, 0);
 }

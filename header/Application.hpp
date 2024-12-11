@@ -27,6 +27,7 @@ public:
     void run();
 private:
     int fps;
+    Uint64 startTime;
 };
 
 #endif
