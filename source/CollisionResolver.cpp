@@ -165,18 +165,13 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         double rbNdotProd = rbNormal.dot(normal);
 
         double j = -(1 + e) * relativeVelocity.dot(normal);
-        std::cout << j << " " << "j1\n";
         double inverseMassSum = (1 / rbA->m) + (1 / rbB->m);
-        std::cout << inverseMassSum << " " << "inverseMass\n";
 
         j /= inverseMassSum + (raNdotProd * raNdotProd) * objectA->inverseInertia() +
              (rbNdotProd * rbNdotProd) * objectB->inverseInertia();
-        std::cout << j << " " << "j2\n";
         j /= static_cast<double>(cps.size());
-        std::cout << j << " " << "j3\n";
 
         Vec2 impulse = normal * j;
-        std::cout << impulse << " " << "impulse\n";
         impulses.push_back(impulse);
     }
 
@@ -189,7 +184,6 @@ void CollisionResolver::resolveCollision(Collision* collision) {
 
         rbB->v += impulse / rbB->m;
         rbB->omega += (rb.cross(impulse) * objectB->inverseInertia());
-        std::cout << "THETA" << rbB->theta * 180 / M_PI << "\n";
     }
     // rbA->checkRestingPosition();
     // rbB->checkRestingPosition();

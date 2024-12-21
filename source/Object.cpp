@@ -4,32 +4,30 @@
 
 #include "../header/Application.hpp"
 
-Object::Object() { type = Object::Type::INVISIBLE; }
+Object::Object() {
+    shape = nullptr;
+    color = Color::BLUE;
+    type = Object::Type::INVISIBLE;
+}
 
 Object::~Object() {}
 
-void Object::init(Application* app, Shape* _shape, Rigidbody* rb, Type t,
-                  Color c) {
+void Object::init(Application* app, Shape* _shape, Type t, Color c) {
     type = t;
     color = c;
+    shape = _shape;
 
     if (type != Object::Type::FIXED) {
-        app->rbSystem->addRigidbody(rb);
-
+        app->rbSystem->addRigidbody(shape->rigidbody);
+    } else {
+        shape->rigidbody->m = INFINITY;
     }
-    _shape->rigidbody = rb;
-    shape = _shape;
-    shape->rigidbody = rb;
-    std::cout << shape->rigidbody->pos << "\n";
+    std::cout << shape->rigidbody->m << " MASS\n";
 
     app->addObject(this);
 }
 
-void Object::render(Renderer* renderer) {
-    // std::cout << shape->rigidbody->getX() << "is accessed in Object\n";
-    //std::cout << shape->rigidbody->pos << "\n";
-    shape->render(renderer, color);
-}
+void Object::render(Renderer* renderer) { shape->render(renderer, color); }
 
 bool Object::isFixed() {
     if (type == FIXED) {
@@ -40,9 +38,9 @@ bool Object::isFixed() {
 
 void Object::translate(const Vec2& mtv) { shape->rigidbody->pos += mtv; }
 
-double Object::inverseInertia(){
-    if(!isFixed()){
-        return 1/shape->momentOfInertia();
+double Object::inverseInertia() {
+    if (!isFixed()) {
+        return 1 / shape->momentOfInertia();
     } else {
         return 0;
     }

@@ -25,7 +25,7 @@ public:
 
     Object();
     ~Object();
-    void init(Application* app, Shape* _shape, Rigidbody* rb, Type t = DYNAMIC, Color c = BLUE);
+    void init(Application* app, Shape* _shape, Type t = DYNAMIC, Color c = BLUE);
     void render(Renderer* renderer);
     bool isFixed();
     void translate(const Vec2& mtv);

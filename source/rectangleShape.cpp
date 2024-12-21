@@ -4,8 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 
-rectangleShape::rectangleShape(Rigidbody* rb, double _w, double _h, int _id){
-    std::cout << "Shape Created\n";
+rectangleShape::rectangleShape(Rigidbody* rb, double _w, double _h, int _id): Shape(rb){
     width = _w;
     height = _h;
     id = _id;

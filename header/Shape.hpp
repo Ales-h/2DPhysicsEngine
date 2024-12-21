@@ -8,7 +8,7 @@ class Shape{
 public:
     Rigidbody* rigidbody;
 
-    Shape();
+    Shape(Rigidbody* rb);
     ~Shape();
     virtual void render(Renderer* renderer, int color);
     virtual Vec2 project(Axis axis) const;
