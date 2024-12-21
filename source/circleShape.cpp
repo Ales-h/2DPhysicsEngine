@@ -1,8 +1,8 @@
 #include "../header/circleShape.hpp"
-#include <iostream>
 
-circleShape::circleShape(double _radius) {
+circleShape::circleShape(Rigidbody* rb, double _radius) {
     radius = _radius;
+    rigidbody = rb;
 }
 
 circleShape::~circleShape() {

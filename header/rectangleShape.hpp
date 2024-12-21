@@ -12,7 +12,7 @@ public:
     Rigidbody* rigidbody;
     int id;
 
-    rectangleShape(double _w = 1, double _h = 1, int _id=0);
+    rectangleShape(Rigidbody* rb, double _w = 1, double _h = 1, int _id=0);
     ~rectangleShape();
     void render(Renderer* renderer, int color) override;
     Vec2 center();

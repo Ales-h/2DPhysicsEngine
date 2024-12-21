@@ -8,7 +8,7 @@ public:
     double radius;
     Rigidbody* rigidbody;
 
-    circleShape(double _radius = 1);
+    circleShape(Rigidbody* rb, double _radius = 1);
     ~circleShape();
     void render(Renderer* renderer, int color) override;
     Vec2 center() const;

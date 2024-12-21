@@ -12,6 +12,7 @@
 int main(int argc, char** argv) {
     if (argc != 2) {
         std::cerr << "You have to write the Scene number to the argument\n";
+        std::exit(-1);
     }
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {

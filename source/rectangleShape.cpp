@@ -4,11 +4,12 @@
 #include <iostream>
 #include <stdexcept>
 
-rectangleShape::rectangleShape(double _w, double _h, int _id){
+rectangleShape::rectangleShape(Rigidbody* rb, double _w, double _h, int _id){
     std::cout << "Shape Created\n";
     width = _w;
     height = _h;
     id = _id;
+    rigidbody = rb;
 }
 
 

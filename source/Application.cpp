@@ -44,8 +44,7 @@ void Application::run() {
     while (isRunning) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
-                throw std::runtime_error("EXIT");
-                break;
+                std::exit(0);
             }
         }
         Uint64 current = SDL_GetPerformanceCounter();

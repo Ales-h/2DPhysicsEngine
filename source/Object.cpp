@@ -15,11 +15,12 @@ void Object::init(Application* app, Shape* _shape, Rigidbody* rb, Type t,
 
     if (type != Object::Type::FIXED) {
         app->rbSystem->addRigidbody(rb);
+
     }
+    _shape->rigidbody = rb;
     shape = _shape;
     shape->rigidbody = rb;
-//    std::cout << shape->rigidbody->pos.x << "\n";
-    //    std::cout << shape->rigidbody->theta << "\n";
+    std::cout << shape->rigidbody->pos << "\n";
 
     app->addObject(this);
 }
