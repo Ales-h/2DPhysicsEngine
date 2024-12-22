@@ -26,10 +26,6 @@ void ballsScene::init(){
     ob4->init(app, r4, Object::FIXED, Object::BLUE);
 
 
-    rb1->m = 200000000;
-    rb2->m = 200000000;
-    rb3->m = 200000000;
-    rb4->m = 200000000;
 
     Rigidbody* rb5 = new Rigidbody(3, -4);
     rectangleShape* r5 = new rectangleShape(rb5, 0.5, 0.2, 5);

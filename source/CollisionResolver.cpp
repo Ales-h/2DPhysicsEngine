@@ -1,7 +1,5 @@
 #include "../header/CollisionResolver.hpp"
 
-#include <cstdlib>
-#include <filesystem>
 #include <iostream>
 #include <limits>
 #include <stdexcept>
@@ -264,6 +262,7 @@ void CollisionResolver::getCollisionPoints(Collision* collision) {
         if (auto circle2 = dynamic_cast<const circleShape*>(shapeB)) {
             tuple = getCollisionPoint(circle1->center(), circle1->radius,
                                       circle2->center(), circle2->radius);
+
         } else if (auto rect2 = dynamic_cast<const rectangleShape*>(shapeB)) {
             tuple = getCollisionPoint(circle1->center(), circle1->radius,
                                       rect2->getVertices());
@@ -294,7 +293,7 @@ std::tuple<int, Vec2, Vec2> CollisionResolver::getCollisionPoint(const Vec2& cen
                                                                  const double& radiusB) {
     Vec2 ab = centerB - centerA;
     Vec2 dir = ab.normalize();
-    Vec2 cp = ab * dir * radiusA;
+    Vec2 cp = centerA + dir * radiusA;
 
     return std::tuple<int, Vec2, Vec2>(1, cp, Vec2::zero());
 }
