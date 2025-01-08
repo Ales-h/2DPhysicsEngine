@@ -23,7 +23,7 @@ void Application::render() {
     SDL_RenderClear(renderer->m_renderer);
     for (int i = 0; i < objects.size(); ++i) {
         objects[i]->render(renderer);
-        if(SDL_GetPerformanceCounter() - startTime > 1000 && objects[i]->type != Object::FIXED && objects[i]->shape->rigidbody->v != Vec2::zero()){
+        if(SDL_GetPerformanceCounter() - startTime > 100 && objects[i]->type != Object::FIXED && objects[i]->shape->rigidbody->v != Vec2::zero()){
         objects[i]->shape->rigidbody->renderVelocityVector(renderer);
         }
     }

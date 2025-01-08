@@ -28,7 +28,7 @@ int Renderer::windowY(const double& y) { return static_cast<int>(-y * 100); }
 // to convert radius, width, length etc. to a window size
 int Renderer::windowLength(const double& a) { return static_cast<int>(a * 100); }
 
-void Renderer::drawRect(std::vector<Vec2>& vertices, int c) {
+void Renderer::drawRect(std::array<Vec2, 4>& vertices, int c) {
     if (vertices.size() != 4) {
         throw std::runtime_error("drawRect requires exactly 4 vertices");
     }

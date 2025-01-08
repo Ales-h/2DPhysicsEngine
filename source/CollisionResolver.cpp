@@ -10,7 +10,7 @@
 #include "../header/Math.hpp"
 #include "../header/rectangleShape.hpp"
 
-CollisionResolver::CollisionResolver() { _e = 0.8; }
+CollisionResolver::CollisionResolver() { _e = 0.3; }
 
 CollisionResolver::~CollisionResolver() {}
 
@@ -158,6 +158,11 @@ void CollisionResolver::resolveCollision(Collision* collision) {
 
         double vAlongNormal = relativeVelocity.dot(normal);
 
+        //collision with fixed bodies dont work with this check
+      //  if(vAlongNormal > 0){
+      //      impulses.push_back(Vec2::zero());
+      //      continue;
+      //  }
 
         double raNdotProd = raNormal.dot(normal);
         double rbNdotProd = rbNormal.dot(normal);
@@ -167,7 +172,7 @@ void CollisionResolver::resolveCollision(Collision* collision) {
 
         j /= inverseMassSum + (raNdotProd * raNdotProd) * objectA->inverseInertia() +
              (rbNdotProd * rbNdotProd) * objectB->inverseInertia();
-        j /= static_cast<double>(cps.size());
+       //j /= static_cast<double>(cps.size());
 
         Vec2 impulse = normal * j;
         impulses.push_back(impulse);
@@ -179,12 +184,27 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         Vec2 rb = rbArray[i];
         rbA->v += -impulse / rbA->m;
         rbA->omega += -ra.cross(impulse) * objectA->inverseInertia();
-
         rbB->v += impulse / rbB->m;
         rbB->omega += (rb.cross(impulse) * objectB->inverseInertia());
+        if(objectA->color == Object::GREEN || objectB->color == Object::GREEN){
+        std::cout << "IMPULSE:" << impulse << "\n";
+        std::cout << "InverseInertia" << objectA->inverseInertia() << "\n";
+        std::cout << "omega change:" << (rb.cross(impulse) * objectA->inverseInertia())
+                  << "\n";
+        std::cout << "omega " << rbA->omega * (180. / M_PI) << "\n";
+        std::cout << "theta " << rbA->theta * (180. / M_PI) << "\n";
+        std::cout << "vel" << rbA->v << "\n";
+
+        std::cout << "vel before" << rbB->v << "\n";
+        std::cout << "omega change:" << (rb.cross(impulse) * objectB->inverseInertia())
+                  << "\n";
+        std::cout << "omega " << rbB->omega * (180. / M_PI) << "\n";
+        std::cout << "theta " << rbB->theta * (180. / M_PI) << "\n";
+        std::cout << "vel" << rbB->v << "\n";
+        }
     }
-    // rbA->checkRestingPosition();
-    // rbB->checkRestingPosition();
+//    rbA->checkRestingPosition();
+//    rbB->checkRestingPosition();
 }
 
 // TODO Refactor
@@ -211,9 +231,12 @@ void CollisionResolver::resolveMTV(Collision* collision) {
         double mass2 = objectB->shape->rigidbody->m;
         double totalMass = mass1 + mass2;
 
+        // if we do mtv based on the mass it results in different impulse outcome
         Vec2 mtv1 = mtv * (mass2 / totalMass);
         Vec2 mtv2 = mtv * (mass1 / totalMass);
 
+       // objectA->translate(-mtv/2.);
+       // objectB->translate(mtv/2.);
         objectA->translate(-mtv1);
         objectB->translate(mtv2);
     }
@@ -264,15 +287,19 @@ void CollisionResolver::getCollisionPoints(Collision* collision) {
                                       circle2->center(), circle2->radius);
 
         } else if (auto rect2 = dynamic_cast<const rectangleShape*>(shapeB)) {
-            tuple = getCollisionPoint(circle1->center(), circle1->radius,
-                                      rect2->getVertices());
+            auto v2 = rect2->getVertices();
+            std::vector<Vec2> vertices2(v2.begin(), v2.end());
+            tuple = getCollisionPoint(circle1->center(), circle1->radius, vertices2);
         }
     } else if (auto rect1 = dynamic_cast<const rectangleShape*>(shapeA)) {
+        auto v1 = rect1->getVertices();
+        std::vector<Vec2> vertices1(v1.begin(), v1.end());
         if (auto rect2 = dynamic_cast<const rectangleShape*>(shapeB)) {
-            tuple = getCollisionPoint(rect1->getVertices(), rect2->getVertices());
+            auto v2 = rect2->getVertices();
+            std::vector<Vec2> vertices2(v2.begin(), v2.end());
+            tuple = getCollisionPoint(vertices1, vertices2);
         } else if (auto circle2 = dynamic_cast<const circleShape*>(shapeB)) {
-            tuple = getCollisionPoint(circle2->center(), circle2->radius,
-                                      rect1->getVertices());
+            tuple = getCollisionPoint(circle2->center(), circle2->radius, vertices1);
         }
     }
     int cpCount = std::get<0>(tuple);

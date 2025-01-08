@@ -2,7 +2,7 @@
 #include <string>
 
 const double LINEAR_RESTING_THRESHOLD = 0.001;
-const double ANGULAR_RESTING_THRESHOLD = 0.0005;
+const double ANGULAR_RESTING_THRESHOLD = 0.005;
 
 
 Rigidbody::Rigidbody(double p_x, double p_y, double v_x, double v_y, double a_x,
@@ -42,6 +42,7 @@ void Rigidbody::checkRestingPosition() {
 
 void Rigidbody::renderVelocityVector(Renderer* renderer){
     renderer->drawArrow(pos, v, v.magnitude()/2);
-    std::string t = std::to_string(v.magnitude());
+    // TODO show velocity magnitude
+    //std::string t = std::to_string(v.magnitude());
     //renderer->renderText(pos, t);
 }

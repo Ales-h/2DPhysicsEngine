@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <array>
 #include <stdexcept>
 
 rectangleShape::rectangleShape(Rigidbody* rb, double _w, double _h, int _id): Shape(rb){
@@ -24,9 +25,9 @@ Vec2 rectangleShape::center(){
 }
 
 // TODO refactor with array, vector is not needed
-std::vector<Vec2> rectangleShape::getVertices() const {
-    std::vector<Vec2> vertices(4);
-    std::vector<Vec2> local = {
+std::array<Vec2, 4> rectangleShape::getVertices() const {
+    std::array<Vec2, 4> vertices;
+    std::array<Vec2, 4> local = {
         Vec2{-0.5*width, -0.5*height}, //bottom left
         Vec2{0.5*width, -0.5*height}, //botom right
         Vec2{0.5*width, 0.5*height}, // top right
@@ -48,7 +49,7 @@ std::vector<Vec2> rectangleShape::getVertices() const {
 }
 
 Vec2 rectangleShape::closestVertex(const Vec2 p) const{
-    std::vector<Vec2> vertices = getVertices();
+    std::array<Vec2, 4> vertices = getVertices();
     Vec2 closest = vertices[0];
     double minDistance = (vertices[0] - p).magnitude();
     for(int i = 0; i < vertices.size(); ++i){
@@ -63,7 +64,7 @@ Vec2 rectangleShape::closestVertex(const Vec2 p) const{
 
 std::vector<Axis> rectangleShape::getAxes() const{
     std::vector<Axis> axes;
-    std::vector<Vec2> vertices = getVertices();
+    std::array<Vec2, 4> vertices = getVertices();
 
     for(int i = 0; i < 4; ++i){
         Vec2 p1 = vertices[i];
@@ -77,7 +78,7 @@ std::vector<Axis> rectangleShape::getAxes() const{
 }
 //project the shape onto an axis and returns an interval
 Vec2 rectangleShape::project(const Axis& axis) const{
-    std::vector<Vec2> vertices = getVertices();
+    std::array<Vec2, 4> vertices = getVertices();
     std::vector<double> projections;
     for(auto v : vertices){
         const double proj = (v.x * axis.getX() + v.y * axis.getY());
