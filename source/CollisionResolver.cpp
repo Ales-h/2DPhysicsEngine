@@ -244,10 +244,10 @@ void CollisionResolver::resolveMTV(Collision* collision) {
 
 void CollisionResolver::checkCollisions(Application* app) {
     collisions.clear();
-    for (int i = 0; i < app->objects.size(); ++i) {
-        Object* objectA = app->objects[i];
-        for (int j = i + 1; j < app->objects.size(); ++j) {
-            Object* objectB = app->objects[j];
+    for (int i = 0; i < app->m_objects.size(); ++i) {
+        Object* objectA = app->m_objects[i];
+        for (int j = i + 1; j < app->m_objects.size(); ++j) {
+            Object* objectB = app->m_objects[j];
             Vec2 mtv = detectCollision(objectA->shape, objectB->shape);
             if (mtv.x == 0 && mtv.y == 0) {
                 continue;

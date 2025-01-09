@@ -9,22 +9,20 @@
 
 class Application {
 public:
-    Renderer* renderer;
-    RigidbodySystem* rbSystem;
-    CollisionResolver* cResolver;
-    std::vector<Object*> objects;
 
-    Application(SDL_Renderer* _renderer, int _fps);
+    Application(int _fps = 60);
     ~Application();
 
-    void init();
-
     void render();
-
-
     void addObject(Object* object);
-
     void run();
+
+    Renderer* m_renderer;
+    SDL_Window* m_window;
+    RigidbodySystem* m_rbSystem;
+    CollisionResolver* m_cResolver;
+    std::vector<Object*> m_objects;
+
 private:
     int fps;
     Uint64 startTime;

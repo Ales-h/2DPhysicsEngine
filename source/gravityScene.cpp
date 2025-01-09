@@ -46,7 +46,7 @@ void gravityScene::init() {
     rb3->theta = 1;
 
     GravityGenerator* gGenerator = new GravityGenerator();
-    app->rbSystem->addForceGenerator(gGenerator);
+    app->m_rbSystem->addForceGenerator(gGenerator);
 }
 
 void gravityScene::clean() {}

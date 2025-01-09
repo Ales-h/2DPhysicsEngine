@@ -18,7 +18,7 @@ void Object::init(Application* app, Shape* _shape, Type t, Color c) {
     shape = _shape;
 
     if (type != Object::Type::FIXED) {
-        app->rbSystem->addRigidbody(shape->rigidbody);
+        app->m_rbSystem->addRigidbody(shape->rigidbody);
     } else {
         shape->rigidbody->m = INFINITY;
     }
