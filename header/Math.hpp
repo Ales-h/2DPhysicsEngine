@@ -3,6 +3,7 @@
 
 #include "Vec2.hpp"
 
+// TODO make this a namespace
 class Math{
 public:
     static bool overlap(const Vec2 v1, const Vec2 v2);
