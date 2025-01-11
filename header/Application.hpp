@@ -22,6 +22,7 @@ public:
     RigidbodySystem* m_rbSystem;
     CollisionResolver* m_cResolver;
     std::vector<Object*> m_objects;
+    std::string sceneName;
 
 private:
     int fps;

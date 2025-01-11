@@ -4,10 +4,11 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "../header/Application.hpp"
+#include "Application.hpp"
 #include "../header/Scenes.hpp"
 #include "../header/ballsScene.hpp"
 #include "../header/gravityScene.hpp"
+#include "../header/SceneManager.hpp"
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -33,6 +34,7 @@ int main(int argc, char** argv) {
     } else {
         throw std::runtime_error("No scene");
     }
+    SceneManager::saveSceneToFile(app);
     app->run();
 
     return 0;

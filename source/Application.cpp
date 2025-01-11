@@ -37,6 +37,7 @@ Application::Application(int _fps) {
 
     m_rbSystem = new RigidbodySystem();
     m_cResolver = new CollisionResolver();
+    sceneName = "newScene";
 }
 
 Application::~Application(){

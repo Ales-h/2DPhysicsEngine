@@ -7,6 +7,7 @@
 class Shape{
 public:
     Rigidbody* rigidbody;
+    char type; // r = rectangle, c = circle
 
     Shape(Rigidbody* rb);
     ~Shape();

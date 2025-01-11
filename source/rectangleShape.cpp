@@ -10,6 +10,7 @@ rectangleShape::rectangleShape(Rigidbody* rb, double _w, double _h, int _id): Sh
     height = _h;
     id = _id;
     rigidbody = rb;
+    type = 'r';
 }
 
 

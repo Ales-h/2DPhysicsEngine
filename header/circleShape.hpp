@@ -7,6 +7,7 @@ class circleShape: public Shape {
 public:
     double radius;
     Rigidbody* rigidbody;
+    char type;
 
     circleShape(Rigidbody* rb, double _radius = 1);
     ~circleShape();

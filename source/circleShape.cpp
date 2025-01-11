@@ -3,6 +3,7 @@
 circleShape::circleShape(Rigidbody* rb, double _radius):Shape(rb) {
     radius = _radius;
     rigidbody = rb;
+    type = 'c';
 }
 
 circleShape::~circleShape() {

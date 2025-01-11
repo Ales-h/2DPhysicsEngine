@@ -11,6 +11,7 @@ public:
     double height;
     Rigidbody* rigidbody;
     int id;
+    char type; // r = rectangle
 
     rectangleShape(Rigidbody* rb, double _w = 1, double _h = 1, int _id=0);
     ~rectangleShape();
