@@ -16,6 +16,7 @@ public:
 
     void addForceGenerator(ForceGenerator* fg);
     void removeForceGenerator(ForceGenerator* fg);
+    bool isGravityGenerator();
 
     void applyForces();
 

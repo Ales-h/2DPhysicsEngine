@@ -3,11 +3,11 @@
 
 #include "Application.hpp"
 
-class Scene {
+class Scenea {
 public:
 
-    Scene();
-    ~Scene();
+    Scenea();
+    ~Scenea();
     virtual void init();
     virtual void clean();
 

@@ -1,6 +1,6 @@
 #include "../header/circleShape.hpp"
 
-circleShape::circleShape(Rigidbody* rb, double _radius):Shape(rb) {
+circleShape::circleShape(Rigidbody* rb, double _radius):Shape(rb, 'c') {
     radius = _radius;
     rigidbody = rb;
     type = 'c';

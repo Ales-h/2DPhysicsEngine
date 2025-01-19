@@ -22,7 +22,7 @@ Rigidbody::Rigidbody(double p_x, double p_y, double v_x, double v_y, double a_x,
     epsilon = _epsilon;
 }
 Rigidbody::~Rigidbody() {
-    // free when removed from the RigidbodySystem
+    // free when the Object is destroyed
 }
 
 double Rigidbody::getX() const { return pos.x; }

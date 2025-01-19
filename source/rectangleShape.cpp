@@ -5,7 +5,7 @@
 #include <array>
 #include <stdexcept>
 
-rectangleShape::rectangleShape(Rigidbody* rb, double _w, double _h, int _id): Shape(rb){
+rectangleShape::rectangleShape(Rigidbody* rb, double _w, double _h, int _id): Shape(rb, 'r'){
     width = _w;
     height = _h;
     id = _id;

@@ -1,7 +1,7 @@
 #include "../header/Shape.hpp"
 #include <stdexcept>
 
-Shape::Shape(Rigidbody* rb): rigidbody(rb){}
+Shape::Shape(Rigidbody* rb, char _type): rigidbody(rb), type(_type){}
 
 Shape::~Shape(){}
 

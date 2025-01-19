@@ -1,11 +1,11 @@
 #include "../header/Scene.hpp"
 
-Scene::Scene(){}
-Scene::~Scene(){}
+Scenea::Scenea(){}
+Scenea::~Scenea(){}
 
-void Scene::init(){}
+void Scenea::init(){}
 
-void Scene::clean(){
+void Scenea::clean(){
 }
 
 

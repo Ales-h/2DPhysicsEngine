@@ -1,9 +1,11 @@
-#include "../header/Renderer.hpp"
+#include "Renderer.hpp"
+
 #include <SDL_pixels.h>
 #include <SDL_ttf.h>
 
 #include <cmath>
 #include <iostream>
+
 
 Renderer::Renderer(SDL_Renderer* renderer) {
     m_renderer = renderer;
@@ -95,7 +97,8 @@ void Renderer::drawArrow(Vec2 pos, Vec2 dir, double magnitude) {
     Vec2 normalizedDir = dir.normalize();
     Vec2 end = {pos.x + normalizedDir.x * magnitude, pos.y + normalizedDir.y * magnitude};
 
-    SDL_RenderDrawLine(m_renderer, windowX(pos.x), windowY(pos.y), windowX(end.x), windowY(end.y));
+    SDL_RenderDrawLine(m_renderer, windowX(pos.x), windowY(pos.y), windowX(end.x),
+                       windowY(end.y));
 
     double arrowHeadLength = 0.1;
     double arrowHeadAngle = M_PI / 6;
@@ -111,44 +114,46 @@ void Renderer::drawArrow(Vec2 pos, Vec2 dir, double magnitude) {
         end.y - arrowHeadLength * (std::sin(-arrowHeadAngle) * normalizedDir.x +
                                    std::cos(-arrowHeadAngle) * normalizedDir.y)};
 
-    SDL_RenderDrawLine(m_renderer, windowX(end.x), windowY(end.y), windowX(left.x), windowY(left.y));
-    SDL_RenderDrawLine(m_renderer, windowX(end.x), windowY(end.y), windowX(right.x), windowY(right.y));
+    SDL_RenderDrawLine(m_renderer, windowX(end.x), windowY(end.y), windowX(left.x),
+                       windowY(left.y));
+    SDL_RenderDrawLine(m_renderer, windowX(end.x), windowY(end.y), windowX(right.x),
+                       windowY(right.y));
 }
 
-
-//void Renderer::renderText(const Vec2& pos, std::string text) {
-//    const char* fontPath = "/System/Library/Fonts/Supplemental/Arial.ttf";
-//    int fontSize = 5;
-//    SDL_Color color = SDL_Color{0, 0, 0, 1};
-//    const char* t = text.c_str();
+// void Renderer::renderText(const Vec2& pos, std::string text) {
+//     const char* fontPath = "/System/Library/Fonts/Supplemental/Arial.ttf";
+//     int fontSize = 5;
+//     SDL_Color color = SDL_Color{0, 0, 0, 1};
+//     const char* t = text.c_str();
 //
-//    TTF_Font* font = TTF_OpenFont(fontPath, fontSize);
-//    if (!font) {
-//        std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
-//        return;
-//    }
+//     TTF_Font* font = TTF_OpenFont(fontPath, fontSize);
+//     if (!font) {
+//         std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
+//         return;
+//     }
 //
-//    SDL_Surface* surface = TTF_RenderText_Solid(font, t, color);
-//    if (!surface) {
-//        std::cerr << "Failed to create surface: " << TTF_GetError() << std::endl;
-//        TTF_CloseFont(font);
-//        return;
-//    }
+//     SDL_Surface* surface = TTF_RenderText_Solid(font, t, color);
+//     if (!surface) {
+//         std::cerr << "Failed to create surface: " << TTF_GetError() << std::endl;
+//         TTF_CloseFont(font);
+//         return;
+//     }
 //
-//    SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, surface);
-//    SDL_FreeSurface(surface); // We no longer need the surface
+//     SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, surface);
+//     SDL_FreeSurface(surface); // We no longer need the surface
 //
-//    if (!texture) {
-//        std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
-//        TTF_CloseFont(font);
-//        return;
-//    }
+//     if (!texture) {
+//         std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
+//         TTF_CloseFont(font);
+//         return;
+//     }
 //
-//    SDL_Rect dstRect = { static_cast<int>(pos.x), static_cast<int>(pos.y), surface->w, surface->h };
+//     SDL_Rect dstRect = { static_cast<int>(pos.x), static_cast<int>(pos.y), surface->w,
+//     surface->h };
 //
-//    SDL_RenderCopy(m_renderer, texture, nullptr, &dstRect);
+//     SDL_RenderCopy(m_renderer, texture, nullptr, &dstRect);
 //
-//    SDL_DestroyTexture(texture);
-//    TTF_CloseFont(font);
-//}
+//     SDL_DestroyTexture(texture);
+//     TTF_CloseFont(font);
+// }
 //

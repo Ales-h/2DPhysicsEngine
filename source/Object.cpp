@@ -22,10 +22,10 @@ void Object::init(Application* app, Shape* _shape, Type t, Color c) {
     } else {
         shape->rigidbody->m = INFINITY;
     }
-    std::cout << shape->rigidbody->m << " MASS\n";
 
     app->addObject(this);
 }
+
 
 void Object::render(Renderer* renderer) { shape->render(renderer, color); }
 

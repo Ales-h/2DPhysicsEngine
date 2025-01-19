@@ -9,7 +9,7 @@ public:
     Rigidbody* rigidbody;
     char type; // r = rectangle, c = circle
 
-    Shape(Rigidbody* rb);
+    Shape(Rigidbody* rb, char _type);
     ~Shape();
     virtual void render(Renderer* renderer, int color);
     virtual Vec2 project(Axis axis) const;

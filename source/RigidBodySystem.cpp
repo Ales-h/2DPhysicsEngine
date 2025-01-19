@@ -1,5 +1,5 @@
-#include "../header/RigidBodySystem.hpp"
-#include <iostream>
+#include "RigidBodySystem.hpp"
+#include "GravityGenerator.hpp"
 
 RigidbodySystem::RigidbodySystem(){
 }
@@ -23,8 +23,17 @@ void RigidbodySystem::removeRigidbody(Rigidbody* rb){
 void RigidbodySystem::addForceGenerator(ForceGenerator* fg){
     forcegenerators.emplace_back(fg);
 }
-
+// TODO
 void RigidbodySystem::removeForceGenerator(ForceGenerator* fg){
+}
+
+bool RigidbodySystem::isGravityGenerator(){
+    for (auto fg : forcegenerators){
+        if(dynamic_cast<GravityGenerator*>(fg)){
+            return true;
+        }
+    }
+    return false;
 }
 
 void RigidbodySystem::applyForces(){

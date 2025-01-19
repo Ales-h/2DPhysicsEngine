@@ -3,7 +3,7 @@
 
 #include "Scene.hpp"
 
-class ballsScene: public Scene {
+class ballsScene: public Scenea {
 public:
     ballsScene(Application* _app);
 

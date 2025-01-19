@@ -6,6 +6,9 @@
 #include "RigidBodySystem.hpp"
 #include "CollisionResolver.hpp"
 
+namespace SceneManager {
+    struct Scene;
+}
 
 class Application {
 public:
@@ -14,6 +17,8 @@ public:
     ~Application();
 
     void render();
+    void loadScene(SceneManager::Scene* scene);
+    SDL_Texture* renderScenePreview(SceneManager::Scene* scene);
     void addObject(Object* object);
     void run();
 

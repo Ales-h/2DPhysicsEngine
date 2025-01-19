@@ -4,6 +4,7 @@
 #include <array>
 #include <SDL.h>
 #include "Vec2.hpp"
+class Scene;
 
 class Renderer {
 public:

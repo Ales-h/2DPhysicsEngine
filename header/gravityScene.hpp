@@ -3,7 +3,7 @@
 
 #include "Scene.hpp"
 
-class gravityScene: public Scene {
+class gravityScene: public Scenea {
 public:
     gravityScene(Application* _app);
 
