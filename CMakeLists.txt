@@ -7,6 +7,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_ttf REQUIRED)
+find_package(SDL2_image REQUIRED)
 
 add_library(
   imgui STATIC
@@ -21,8 +22,9 @@ add_library(
 target_include_directories(imgui PUBLIC thirdparty/imgui
                                         thirdparty/imgui/backends)
 
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
 include_directories(${SDL2_INCLUDE_DIRS})
+include_directories(${SDL2_TTF_INCLUDE_DIRS})
+include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 include_directories(header)
 include_directories(thirdparty/json)
 
@@ -30,4 +32,4 @@ file(GLOB_RECURSE SOURCES "source/*.cpp")
 file(GLOB_RECURSE HEADERS "header/*.h")
 
 add_executable(2DPhysicsEngine ${SOURCES} ${HEADERS})
-target_link_libraries(2DPhysicsEngine ${SDL2_LIBRARIES} ${SDL2_TTF_LIBRARIES} imgui)
+target_link_libraries(2DPhysicsEngine ${SDL2_LIBRARIES} ${SDL2_TTF_LIBRARIES} SDL2_image imgui)

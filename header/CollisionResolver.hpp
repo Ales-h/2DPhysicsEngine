@@ -25,7 +25,8 @@ class CollisionResolver {
     Vec2 detectCollision(const circleShape* c2, const circleShape* c1);
     Vec2 detectCollision(const Shape* shape1, const Shape* shape2);
 
-    std::pair<double, Vec2> pointSegmentDistance(const Vec2& p, const Vec2& a, const Vec2& b);
+    std::pair<double, Vec2> pointSegmentDistance(const Vec2& p, const Vec2& a,
+                                                 const Vec2& b);
 
     void getCollisionPoints(Collision* collision);
 
@@ -45,7 +46,9 @@ class CollisionResolver {
 
     void resolveMTV(Collision* collision);
 
-    double _e;  // součinitel restituce
+public:
+    float _e;  // součinitel restituce
+private:
     std::vector<Collision> collisions;
     std::vector<Collision> cpsToRender;
 };

@@ -46,6 +46,7 @@ Application::Application(int _fps) {
     m_rbSystem = new RigidbodySystem();
     m_cResolver = new CollisionResolver();
     sceneName = "";
+    appFlags = AppFlags_ShowCollisionPoints | AppFlags_ShowVelocityVectors;
 }
 
 Application::~Application() {
@@ -64,16 +65,17 @@ void Application::addObject(Object* object) {
     object->idx = m_objects.size() - 1;
 }
 
-void Application::loadScene(SceneManager::Scene* scene){
+void Application::loadScene(SceneManager::Scene* scene) {
     sceneName = scene->name;
     m_objects.reserve(scene->objects.size());
-    for(auto ob : scene->objects){
-        if(ob->type != Object::FIXED){
-        m_rbSystem->addRigidbody(ob->shape->rigidbody);
+    for (auto ob : scene->objects) {
+        if (ob->type != Object::FIXED) {
+            m_rbSystem->addRigidbody(ob->shape->rigidbody);
         }
         addObject(ob);
     }
-    if(scene->gravity){
+    if (scene->gravity) {
+        appFlags |= AppFlags_Gravity;
         GravityGenerator* gg = new GravityGenerator();
         m_rbSystem->addForceGenerator(gg);
     }
@@ -105,10 +107,15 @@ void Application::render() {
         if (SDL_GetPerformanceCounter() - startTime > 100 &&
             m_objects[i]->type != Object::FIXED &&
             m_objects[i]->shape->rigidbody->v != Vec2::zero()) {
-            m_objects[i]->shape->rigidbody->renderVelocityVector(m_renderer);
+            if (appFlags & AppFlags_ShowVelocityVectors) {
+                m_objects[i]->shape->rigidbody->renderVelocityVector(m_renderer);
+            }
         }
     }
-    m_cResolver->renderCollisionPoints(m_renderer);
+    if (appFlags & AppFlags_ShowCollisionPoints) {
+        m_cResolver->renderCollisionPoints(m_renderer);
+    } else {
+    }
 }
 
 void Application::run() {
@@ -130,9 +137,11 @@ void Application::run() {
     (void)io;
 
     std::vector<SceneManager::Scene*> scenes = SceneManager::loadScenes();
+    UI::initUI(m_renderer->m_renderer);
 
-    SDL_Texture* textureA = SDL_CreateTexture(m_renderer->m_renderer, SDL_PIXELFORMAT_BGRA8888,
-                      SDL_TEXTUREACCESS_TARGET, 1200, 800);
+    SDL_Texture* textureA =
+        SDL_CreateTexture(m_renderer->m_renderer, SDL_PIXELFORMAT_BGRA8888,
+                          SDL_TEXTUREACCESS_TARGET, 1200, 800);
 
     ImGui_ImplSDL2_InitForSDLRenderer(m_window, m_renderer->m_renderer);
     ImGui_ImplSDLRenderer2_Init(m_renderer->m_renderer);
@@ -162,12 +171,18 @@ void Application::run() {
                 accumulator -= physics_time_step;
             }
         }
-        ImGui::Begin("toolbar");
-        if (ImGui::Button("Play")) {
-            isSimulationRunning = !isSimulationRunning;
+        //   ImGui::Begin("toolbar");
+        //   if (ImGui::Button("Play")) {
+        //       isSimulationRunning = !isSimulationRunning;
+        //       start = SDL_GetPerformanceCounter();
+        //   }
+        //   ImGui::End();
+        bool ifChanged = isSimulationRunning;
+        UI::renderToolsBar(this, isSimulationRunning);
+        if (ifChanged != isSimulationRunning) {
             start = SDL_GetPerformanceCounter();
         }
-        ImGui::End();
+        UI::renderSettingWindow(this);
 
         if (sceneName == "") {
             UI::renderSceneSelectWindow(this, scenes);

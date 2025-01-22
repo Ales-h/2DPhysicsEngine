@@ -3,6 +3,7 @@
 
 #include "Rigidbody.hpp"
 #include "ForceGenerator.hpp"
+#include "GravityGenerator.hpp"
 #include <vector>
 
 class RigidbodySystem{
@@ -17,6 +18,8 @@ public:
     void addForceGenerator(ForceGenerator* fg);
     void removeForceGenerator(ForceGenerator* fg);
     bool isGravityGenerator();
+    GravityGenerator* getGravityGenerator();
+
 
     void applyForces();
 

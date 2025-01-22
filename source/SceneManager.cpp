@@ -141,7 +141,7 @@ nlohmann::json sceneToJSON(Application* app) {
         scene["name"] = "scene";
     }
     scene["objectCount"] = app->m_objects.size();
-    if (app->m_rbSystem->isGravityGenerator()) {
+    if (app->appFlags & AppFlags_Gravity) {
         scene["gravity"] = true;
     } else {
         scene["gravity"] = false;

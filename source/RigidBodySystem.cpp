@@ -1,58 +1,72 @@
 #include "RigidBodySystem.hpp"
+
+#include <algorithm>
+
 #include "GravityGenerator.hpp"
 
-RigidbodySystem::RigidbodySystem(){
-}
+RigidbodySystem::RigidbodySystem() {}
 
+RigidbodySystem::~RigidbodySystem() {}
 
-RigidbodySystem::~RigidbodySystem(){
-}
-
-void RigidbodySystem::addRigidbody(Rigidbody* rb){
+void RigidbodySystem::addRigidbody(Rigidbody* rb) {
     rigidbodies.emplace_back(rb);
-    rb->idx = rigidbodies.size()-1;
+    rb->idx = rigidbodies.size() - 1;
 }
 
-void RigidbodySystem::removeRigidbody(Rigidbody* rb){
+void RigidbodySystem::removeRigidbody(Rigidbody* rb) {
     // swap with last element and resize
     rigidbodies[rb->idx] = rigidbodies.back();
     rigidbodies[rb->idx]->idx = rb->idx;
     rigidbodies.resize(rigidbodies.size() - 1);
 }
 
-void RigidbodySystem::addForceGenerator(ForceGenerator* fg){
+void RigidbodySystem::addForceGenerator(ForceGenerator* fg) {
     forcegenerators.emplace_back(fg);
 }
-// TODO
-void RigidbodySystem::removeForceGenerator(ForceGenerator* fg){
+
+void RigidbodySystem::removeForceGenerator(ForceGenerator* fg) {
+    // move the pointer to end of the vector
+    auto it = std::remove(forcegenerators.begin(), forcegenerators.end(), fg);
+    forcegenerators.erase(it, forcegenerators.end());
+    delete fg;
 }
 
-bool RigidbodySystem::isGravityGenerator(){
-    for (auto fg : forcegenerators){
-        if(dynamic_cast<GravityGenerator*>(fg)){
+bool RigidbodySystem::isGravityGenerator() {
+    for (auto fg : forcegenerators) {
+        if (dynamic_cast<GravityGenerator*>(fg)) {
             return true;
         }
     }
     return false;
 }
 
-void RigidbodySystem::applyForces(){
-    const int s =  forcegenerators.size();
+GravityGenerator* RigidbodySystem::getGravityGenerator() {
+    if (isGravityGenerator()) {
+        for (auto fg : forcegenerators) {
+            if (auto gg = dynamic_cast<GravityGenerator*>(fg)) {
+                return gg;
+            }
+        }
+    }
+    return nullptr;
+}
 
-    for(int i = 0; i < s; ++i){
+void RigidbodySystem::applyForces() {
+    const int s = forcegenerators.size();
+
+    for (int i = 0; i < s; ++i) {
         forcegenerators[i]->ApplyForce(rigidbodies);
     }
 }
 
-void RigidbodySystem::step(double dt){
-
+void RigidbodySystem::step(double dt) {
     applyForces();
     const int s = rigidbodies.size();
 
-    for(int i = 0; i < s; ++i){
+    for (int i = 0; i < s; ++i) {
         Rigidbody* rb = rigidbodies[i];
-        //std::cout << "position: " << rb->getX() << " " << rb->getY() << "\n";
-        //std::cout << "velocity: " << rb->v.x << " " << rb->v.y << "\n";
+        // std::cout << "position: " << rb->getX() << " " << rb->getY() << "\n";
+        // std::cout << "velocity: " << rb->v.x << " " << rb->v.y << "\n";
 
         rb->a = rb->f / rb->m;
         rb->v += rb->a * dt;

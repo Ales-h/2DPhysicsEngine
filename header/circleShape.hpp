@@ -14,7 +14,7 @@ public:
     void render(Renderer* renderer, int color) override;
     Vec2 center() const;
     Vec2 project(const Axis& axis) const;
-    double momentOfInertia() override; // TODO
+    double momentOfInertia() override;
 };
 
 #endif

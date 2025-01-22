@@ -22,7 +22,6 @@ Vec2 circleShape::project(const Axis& axis) const{
 
     return Vec2(proj - radius, proj + radius);
 }
-// TODO
 double circleShape::momentOfInertia(){
     return 1./2. * rigidbody->m * radius * radius;
 }
