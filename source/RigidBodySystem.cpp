@@ -6,7 +6,11 @@
 
 RigidbodySystem::RigidbodySystem() {}
 
-RigidbodySystem::~RigidbodySystem() {}
+RigidbodySystem::~RigidbodySystem() {
+    for(auto fg : forcegenerators){
+        delete fg;
+    }
+}
 
 void RigidbodySystem::addRigidbody(Rigidbody* rb) {
     rigidbodies.emplace_back(rb);

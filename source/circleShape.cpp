@@ -2,11 +2,6 @@
 
 circleShape::circleShape(Rigidbody* rb, double _radius):Shape(rb, 'c') {
     radius = _radius;
-    rigidbody = rb;
-    type = 'c';
-}
-
-circleShape::~circleShape() {
 }
 
 void circleShape::render(Renderer* renderer, int color){

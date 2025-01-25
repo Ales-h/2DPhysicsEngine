@@ -29,7 +29,7 @@ static SDL_Texture* resetTexture;
 static SDL_Texture* editTexture;
 static SDL_Texture* settingTexture;
 static SDL_Texture* dragTexture;
-static SDL_Texture* magnetTexture;
+static SDL_Texture* spiralTexture;
 static SDL_Texture* spawnTexture;
 
 void initUI(SDL_Renderer* renderer) {
@@ -39,7 +39,7 @@ void initUI(SDL_Renderer* renderer) {
     editTexture = loadTexture(renderer, "../assets/icons/edit.png");
     settingTexture = loadTexture(renderer, "../assets/icons/setting.png");
     dragTexture = loadTexture(renderer, "../assets/icons/drag.png");
-    magnetTexture = loadTexture(renderer, "../assets/icons/magnet.png");
+    spiralTexture = loadTexture(renderer, "../assets/icons/magnet.png");
     spawnTexture = loadTexture(renderer, "../assets/icons/spawn.png");
 }
 
@@ -175,7 +175,7 @@ void renderSceneSelectWindow(Application* app,
 }
 void renderToolsBar(Application* app, bool& isSimRunning) {
     ImGui::SetNextWindowPos(ImVec2{0, 0});
-    ImGui::SetNextWindowSize(ImVec2{45, 175});
+    ImGui::SetNextWindowSize(ImVec2{45, 185});
     ImGui::Begin("test", NULL, flagsToolbar);
 
     if (isSimRunning) {
@@ -188,14 +188,44 @@ void renderToolsBar(Application* app, bool& isSimRunning) {
         }
     }
     if (ImGui::ImageButton("reset", (ImTextureID)resetTexture, ImVec2(20, 20))) {
+        isSimRunning = false;
+        app->clear();
+        app->loadScene(app->m_scene);
     }
 
+    static ImVec4 selectColor(66. / 255, 150. / 255, 249. / 255, 1);
+    static int select = 0;
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
+    ImGui::PushStyleColor(ImGuiCol_Button,
+                          select == 1 ? selectColor : ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
     if (ImGui::ImageButton("drag", (ImTextureID)dragTexture, ImVec2(20, 20))) {
+        select = 1;
+        app->appFlags &= ~AppFlags_SpiralEvent;
+        app->appFlags &= ~AppFlags_SpawnObjectsEvent;
+        app->appFlags |= AppFlags_DragObjectsEvent;
     }
-    if (ImGui::ImageButton("magnet", (ImTextureID)magnetTexture, ImVec2(20, 20))) {
+    ImGui::PushStyleColor(ImGuiCol_Button,
+                          select == 2 ? selectColor : ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
+    if (ImGui::ImageButton("spiral", (ImTextureID)spiralTexture, ImVec2(20, 20))) {
+        select = 2;
+        app->appFlags &= ~AppFlags_SpawnObjectsEvent;
+        app->appFlags &= ~AppFlags_DragObjectsEvent;
+        app->appFlags |= AppFlags_SpiralEvent;
     }
+    ImGui::PushStyleColor(ImGuiCol_Button,
+                          select == 3 ? selectColor : ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
     if (ImGui::ImageButton("spawn", (ImTextureID)spawnTexture, ImVec2(20, 20))) {
+        select = 3;
+        app->appFlags &= ~AppFlags_SpiralEvent;
+        app->appFlags &= ~AppFlags_DragObjectsEvent;
+        app->appFlags |= AppFlags_SpawnObjectsEvent;
+    }
+    for(int i = 0; i < 3; ++i){
+    ImGui::PopStyleVar();
+    ImGui::PopStyleColor();
     }
 
     ImGui::End();
@@ -229,7 +259,7 @@ void renderSettingWindow(Application* app) {
     ImGui::SameLine();
     ImGui::Text("(?)");
     ImGui::SetItemTooltip(
-        "Gravitacni zrychleni je konstanta, ktera telesa urychluje smerem dolu");
+        "Gravitacni zrychleni je hodnota, ktera telesa urychluje smerem dolu");
     ImGui::InputDouble("###a31553", gravA, 0.01f, 1.0f, "%.8f");
     if (!gravity) {
         ImGui::EndDisabled();
@@ -251,8 +281,7 @@ void renderSettingWindow(Application* app) {
     // TODO Tooltips
     ImGui::SameLine();
     ImGui::Text("(?)");
-    ImGui::SetItemTooltip(
-        "");
+    ImGui::SetItemTooltip("");
 
     static bool ShowVV = app->appFlags & AppFlags_ShowVelocityVectors;
     bool ShowVVChanged = ShowVV;
@@ -262,8 +291,7 @@ void renderSettingWindow(Application* app) {
     }
     ImGui::SameLine();
     ImGui::Text("(?)");
-    ImGui::SetItemTooltip(
-        "");
+    ImGui::SetItemTooltip("");
 
     ImGui::End();
 }

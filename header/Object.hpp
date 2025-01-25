@@ -24,6 +24,7 @@ public:
     int idx;
 
     Object();
+    Object(const Object& ob);
     ~Object();
     void init(Application* app, Shape* _shape, Type t = DYNAMIC, Color c = BLUE);
     void render(Renderer* renderer);

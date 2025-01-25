@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "../header/Application.hpp"
+#include "circleShape.hpp"
 
 Object::Object() {
     shape = nullptr;
@@ -10,7 +11,20 @@ Object::Object() {
     type = Object::Type::INVISIBLE;
 }
 
-Object::~Object() {}
+Object::Object(const Object& ob) {
+    if (ob.shape->type == 'r') {
+        auto rect = dynamic_cast<rectangleShape*>(ob.shape);
+        shape = new rectangleShape(*rect);
+    }
+    if(ob.shape->type == 'c') {
+        auto circ= dynamic_cast<circleShape*>(ob.shape);
+        shape = new circleShape(*circ);
+    }
+    color = ob.color;
+    type = ob.type;
+}
+
+Object::~Object() { delete shape; }
 
 void Object::init(Application* app, Shape* _shape, Type t, Color c) {
     type = t;
@@ -25,7 +39,6 @@ void Object::init(Application* app, Shape* _shape, Type t, Color c) {
 
     app->addObject(this);
 }
-
 
 void Object::render(Renderer* renderer) { shape->render(renderer, color); }
 

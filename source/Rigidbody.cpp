@@ -1,9 +1,9 @@
 #include "../header/Rigidbody.hpp"
+
 #include <string>
 
 const double LINEAR_RESTING_THRESHOLD = 0.001;
 const double ANGULAR_RESTING_THRESHOLD = 0.005;
-
 
 Rigidbody::Rigidbody(double p_x, double p_y, double v_x, double v_y, double a_x,
                      double a_y, double f_x, double f_y, double _m, double _theta,
@@ -21,6 +21,17 @@ Rigidbody::Rigidbody(double p_x, double p_y, double v_x, double v_y, double a_x,
     omega = _omega;
     epsilon = _epsilon;
 }
+
+Rigidbody::Rigidbody(const Rigidbody& rb)
+    : pos(rb.pos),
+      v(rb.v),
+      a(rb.a),
+      f(rb.f),
+      m(rb.m),
+      theta(rb.theta),
+      omega(rb.omega),
+      epsilon(rb.epsilon) {}
+
 Rigidbody::~Rigidbody() {
     // free when the Object is destroyed
 }
@@ -40,9 +51,9 @@ void Rigidbody::checkRestingPosition() {
     }
 }
 
-void Rigidbody::renderVelocityVector(Renderer* renderer){
-    renderer->drawArrow(pos, v, v.magnitude()/2);
+void Rigidbody::renderVelocityVector(Renderer* renderer) {
+    renderer->drawArrow(pos, v, v.magnitude() / 2);
     // TODO show velocity magnitude
-    //std::string t = std::to_string(v.magnitude());
-    //renderer->renderText(pos, t);
+    // std::string t = std::to_string(v.magnitude());
+    // renderer->renderText(pos, t);
 }

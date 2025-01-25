@@ -8,8 +8,11 @@
 
 #include "GravityGenerator.hpp"
 #include "Object.hpp"
+#include "RigidBodySystem.hpp"
 #include "SceneManager.hpp"
 #include "UI.hpp"
+#include "Events.hpp"
+
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
 #include "imgui.h"
@@ -45,8 +48,8 @@ Application::Application(int _fps) {
 
     m_rbSystem = new RigidbodySystem();
     m_cResolver = new CollisionResolver();
-    sceneName = "";
     appFlags = AppFlags_ShowCollisionPoints | AppFlags_ShowVelocityVectors;
+    m_scene = nullptr;
 }
 
 Application::~Application() {
@@ -66,19 +69,32 @@ void Application::addObject(Object* object) {
 }
 
 void Application::loadScene(SceneManager::Scene* scene) {
-    sceneName = scene->name;
+    m_scene = scene;
     m_objects.reserve(scene->objects.size());
     for (auto ob : scene->objects) {
-        if (ob->type != Object::FIXED) {
-            m_rbSystem->addRigidbody(ob->shape->rigidbody);
+        Object* obCopy = new Object(*ob);
+        if (obCopy->type != Object::FIXED) {
+            m_rbSystem->addRigidbody(obCopy->shape->rigidbody);
         }
-        addObject(ob);
+        addObject(obCopy);
     }
     if (scene->gravity) {
         appFlags |= AppFlags_Gravity;
         GravityGenerator* gg = new GravityGenerator();
         m_rbSystem->addForceGenerator(gg);
     }
+}
+
+void Application::clear() {
+    // clear objects
+    for (Object* ob : m_objects) {
+        delete ob;
+    }
+    m_objects.clear();
+
+    // delete RbSystem
+    delete m_rbSystem;
+    m_rbSystem = new RigidbodySystem();
 }
 
 SDL_Texture* Application::renderScenePreview(SceneManager::Scene* scene) {
@@ -118,6 +134,8 @@ void Application::render() {
     }
 }
 
+
+
 void Application::run() {
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
@@ -130,7 +148,6 @@ void Application::run() {
     Uint64 start = SDL_GetPerformanceCounter();
     Uint64 current;
     startTime = start;
-    SDL_Event e;
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     // io.FontGlobalScale = 2.0f;
@@ -146,13 +163,7 @@ void Application::run() {
     ImGui_ImplSDL2_InitForSDLRenderer(m_window, m_renderer->m_renderer);
     ImGui_ImplSDLRenderer2_Init(m_renderer->m_renderer);
     while (isRunning) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                isRunning = false;
-                std::exit(0);
-            }
-            ImGui_ImplSDL2_ProcessEvent(&e);
-        }
+        Events::handleEvents(this, isRunning);
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
@@ -171,12 +182,6 @@ void Application::run() {
                 accumulator -= physics_time_step;
             }
         }
-        //   ImGui::Begin("toolbar");
-        //   if (ImGui::Button("Play")) {
-        //       isSimulationRunning = !isSimulationRunning;
-        //       start = SDL_GetPerformanceCounter();
-        //   }
-        //   ImGui::End();
         bool ifChanged = isSimulationRunning;
         UI::renderToolsBar(this, isSimulationRunning);
         if (ifChanged != isSimulationRunning) {
@@ -184,7 +189,7 @@ void Application::run() {
         }
         UI::renderSettingWindow(this);
 
-        if (sceneName == "") {
+        if (m_scene == nullptr) {
             UI::renderSceneSelectWindow(this, scenes);
         }
 

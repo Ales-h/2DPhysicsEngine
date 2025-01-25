@@ -22,6 +22,7 @@ class Rigidbody {
               double a_x = 0, double a_y = 0, double f_x = 0, double f_y = 0,
               double _m = 1, double _theta = 0, double _omega = 0,
               double _epsilon = 0);
+    Rigidbody(const Rigidbody& rb);
     ~Rigidbody();
 
     double getX() const;

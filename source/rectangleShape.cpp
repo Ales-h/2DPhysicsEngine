@@ -1,22 +1,17 @@
 #include "../header/rectangleShape.hpp"
 #include <algorithm>
 #include <cmath>
-#include <iostream>
 #include <array>
 #include <stdexcept>
 
-rectangleShape::rectangleShape(Rigidbody* rb, double _w, double _h, int _id): Shape(rb, 'r'){
+rectangleShape::rectangleShape(Rigidbody* rb, double _w, double _h): Shape(rb, 'r'){
     width = _w;
     height = _h;
-    id = _id;
-    rigidbody = rb;
-    type = 'r';
 }
 
 
-rectangleShape::~rectangleShape(){}
 
-void rectangleShape::render(Renderer* renderer, int color){
+void rectangleShape::render(Renderer* renderer, int color) {
     auto vertices = getVertices();
     renderer->drawRect(vertices, color);
 }

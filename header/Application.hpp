@@ -18,17 +18,25 @@ enum AppFlags_ {
     AppFlags_Gravity = 1 << 0,
     AppFlags_ShowCollisionPoints = 1 << 1,
     AppFlags_ShowVelocityVectors = 1 << 2,
+    // which tool is selected(spawn object, drag object, spiral)
+    AppFlags_DragObjectsEvent = 1 << 29,
+    AppFlags_SpiralEvent = 1 << 30,
+    AppFlags_SpawnObjectsEvent = 1 << 31,
+
 };
 
 class Application {
    public:
     Application(int _fps = 60);
     ~Application();
+    void addObject(Object* object);
 
     void render();
-    void loadScene(SceneManager::Scene* scene);
     SDL_Texture* renderScenePreview(SceneManager::Scene* scene);
-    void addObject(Object* object);
+
+    void loadScene(SceneManager::Scene* scene);
+    void clear();  // clears the scene to be able to load a new
+
     void run();
 
     AppFlags appFlags;
@@ -37,7 +45,7 @@ class Application {
     RigidbodySystem* m_rbSystem;
     CollisionResolver* m_cResolver;
     std::vector<Object*> m_objects;
-    std::string sceneName;
+    SceneManager::Scene* m_scene;  // current scene
 
    private:
     int fps;

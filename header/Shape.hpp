@@ -10,10 +10,11 @@ public:
     char type; // r = rectangle, c = circle
 
     Shape(Rigidbody* rb, char _type);
-    ~Shape();
-    virtual void render(Renderer* renderer, int color);
-    virtual Vec2 project(Axis axis) const;
-    virtual double momentOfInertia();
+    Shape(const Shape& sh);
+    virtual ~Shape();
+    virtual void render(Renderer* renderer, int color) = 0;
+    virtual Vec2 project(const Axis& axis) const = 0;
+    virtual double momentOfInertia() = 0;
 };
 
 #endif

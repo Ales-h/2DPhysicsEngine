@@ -136,10 +136,6 @@ Vec2 JSONformatToVec(std::string jsonString) {
 nlohmann::json sceneToJSON(Application* app) {
     nlohmann::json scene;
 
-    scene["name"] = app->sceneName;
-    if (app->sceneName == "") {
-        scene["name"] = "scene";
-    }
     scene["objectCount"] = app->m_objects.size();
     if (app->appFlags & AppFlags_Gravity) {
         scene["gravity"] = true;
@@ -194,7 +190,7 @@ bool isUniqueName(std::string name) {
 }
 void saveSceneToFile(Application* app) {
     auto jsonScene = sceneToJSON(app);
-    std::string fileName = app->sceneName;
+    std::string fileName = app->m_scene->name;
     int i = 1;
     while (true) {
         i++;

@@ -2,25 +2,25 @@
 #define PHYSOLVER_RECTANGLE_SHAPE_HPP
 
 #include <vector>
+
 #include "Rigidbody.hpp"
 #include "Shape.hpp"
 
-class rectangleShape: public Shape {
-public:
+class rectangleShape : public Shape {
+   public:
     double width;
     double height;
-    Rigidbody* rigidbody;
-    int id;
-    char type; // r = rectangle
 
-    rectangleShape(Rigidbody* rb, double _w = 1, double _h = 1, int _id=0);
-    ~rectangleShape();
+    rectangleShape(Rigidbody* rb, double _w = 1, double _h = 1);
+    rectangleShape(const rectangleShape& rect)
+        : Shape(rect), width(rect.width), height(rect.height) {}
+    //~rectangleShape() override = default;
     void render(Renderer* renderer, int color) override;
     Vec2 center();
-    std::array<Vec2, 4> getVertices() const;
+    std::array<Vec2, 4> getVertices() const ;
     Vec2 closestVertex(const Vec2 p) const;
     std::vector<Axis> getAxes() const;
-    Vec2 project(const Axis& axis) const;
+    Vec2 project(const Axis& axis)const override;
     double momentOfInertia() override;
 };
 

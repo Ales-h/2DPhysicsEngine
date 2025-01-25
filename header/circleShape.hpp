@@ -6,14 +6,13 @@
 class circleShape: public Shape {
 public:
     double radius;
-    Rigidbody* rigidbody;
-    char type;
 
     circleShape(Rigidbody* rb, double _radius = 1);
-    ~circleShape();
+    circleShape(const circleShape& circ): Shape(circ), radius(circ.radius){}
+    ~circleShape() override = default;
     void render(Renderer* renderer, int color) override;
     Vec2 center() const;
-    Vec2 project(const Axis& axis) const;
+    Vec2 project(const Axis& axis) const override;
     double momentOfInertia() override;
 };
 
