@@ -54,7 +54,7 @@ Application::Application(int _fps) {
 
 Application::~Application() {
     //   TTF_Quit();
-    SDL_DestroyRenderer(m_renderer->m_renderer);
+    SDL_DestroyRenderer(m_renderer->sdl_renderer);
     SDL_DestroyWindow(m_window);
     SDL_Quit();
 
@@ -102,22 +102,22 @@ SDL_Texture* Application::renderScenePreview(SceneManager::Scene* scene) {
     int window_height = 0;
     SDL_GetWindowSize(m_window, &window_width, &window_height);
     SDL_Texture* texture =
-        SDL_CreateTexture(m_renderer->m_renderer, SDL_PIXELFORMAT_BGRA8888,
+        SDL_CreateTexture(m_renderer->sdl_renderer, SDL_PIXELFORMAT_BGRA8888,
                           SDL_TEXTUREACCESS_TARGET, window_width, window_height);
 
-    SDL_SetRenderTarget(m_renderer->m_renderer, texture);
-    SDL_SetRenderDrawColor(m_renderer->m_renderer, 255, 255, 255, 255);
-    SDL_RenderClear(m_renderer->m_renderer);
+    SDL_SetRenderTarget(m_renderer->sdl_renderer, texture);
+    SDL_SetRenderDrawColor(m_renderer->sdl_renderer, 255, 255, 255, 255);
+    SDL_RenderClear(m_renderer->sdl_renderer);
     for (int i = 0; i < scene->objects.size(); ++i) {
         scene->objects[i]->render(m_renderer);
     }
-    SDL_SetRenderTarget(m_renderer->m_renderer, nullptr);
+    SDL_SetRenderTarget(m_renderer->sdl_renderer, nullptr);
     return texture;
 }
 
 void Application::render() {
-    SDL_SetRenderDrawColor(m_renderer->m_renderer, 255, 255, 255, 255);
-    SDL_RenderClear(m_renderer->m_renderer);
+    SDL_SetRenderDrawColor(m_renderer->sdl_renderer, 255, 255, 255, 255);
+    SDL_RenderClear(m_renderer->sdl_renderer);
     for (int i = 0; i < m_objects.size(); ++i) {
         m_objects[i]->render(m_renderer);
         if (SDL_GetPerformanceCounter() - startTime > 100 &&
@@ -154,14 +154,14 @@ void Application::run() {
     (void)io;
 
     std::vector<SceneManager::Scene*> scenes = SceneManager::loadScenes();
-    UI::initUI(m_renderer->m_renderer);
+    UI::initUI(m_renderer->sdl_renderer);
 
     SDL_Texture* textureA =
-        SDL_CreateTexture(m_renderer->m_renderer, SDL_PIXELFORMAT_BGRA8888,
+        SDL_CreateTexture(m_renderer->sdl_renderer, SDL_PIXELFORMAT_BGRA8888,
                           SDL_TEXTUREACCESS_TARGET, 1200, 800);
 
-    ImGui_ImplSDL2_InitForSDLRenderer(m_window, m_renderer->m_renderer);
-    ImGui_ImplSDLRenderer2_Init(m_renderer->m_renderer);
+    ImGui_ImplSDL2_InitForSDLRenderer(m_window, m_renderer->sdl_renderer);
+    ImGui_ImplSDLRenderer2_Init(m_renderer->sdl_renderer);
     while (isRunning) {
         Events::handleEvents(this, isRunning);
         ImGui_ImplSDLRenderer2_NewFrame();
@@ -196,8 +196,8 @@ void Application::run() {
         ImGui::Render();
         render();  // Simulation Render (SDL)
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(),
-                                              m_renderer->m_renderer);
-        SDL_RenderPresent(m_renderer->m_renderer);
+                                              m_renderer->sdl_renderer);
+        SDL_RenderPresent(m_renderer->sdl_renderer);
 
         Uint64 end = SDL_GetPerformanceCounter();
         if (isSimulationRunning) {

@@ -8,7 +8,7 @@
 
 
 Renderer::Renderer(SDL_Renderer* renderer) {
-    m_renderer = renderer;
+    sdl_renderer = renderer;
 
     m_colors = {
         SDL_Color{70, 255, 178},   // Green
@@ -44,11 +44,11 @@ void Renderer::drawRect(std::array<Vec2, 4>& vertices, int c) {
     }
 
     int indices[] = {0, 1, 2, 0, 2, 3};
-    SDL_RenderGeometry(m_renderer, nullptr, sdlVertices, 4, indices, 6);
+    SDL_RenderGeometry(sdl_renderer, nullptr, sdlVertices, 4, indices, 6);
 }
 void Renderer::drawCircle(Vec2 pos, double radius, int c) {
     SDL_Color color = getColor(c);
-    SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+    SDL_SetRenderDrawColor(sdl_renderer, color.r, color.g, color.b, color.a);
 
     int centerX = windowX(pos.x);
     int centerY = windowY(pos.y);
@@ -57,13 +57,13 @@ void Renderer::drawCircle(Vec2 pos, double radius, int c) {
     int d = 1 - windowLength(radius);
 
     while (x <= y) {
-        SDL_RenderDrawLine(m_renderer, centerX - x, centerY - y, centerX + x,
+        SDL_RenderDrawLine(sdl_renderer, centerX - x, centerY - y, centerX + x,
                            centerY - y);
-        SDL_RenderDrawLine(m_renderer, centerX - x, centerY + y, centerX + x,
+        SDL_RenderDrawLine(sdl_renderer, centerX - x, centerY + y, centerX + x,
                            centerY + y);
-        SDL_RenderDrawLine(m_renderer, centerX - y, centerY - x, centerX + y,
+        SDL_RenderDrawLine(sdl_renderer, centerX - y, centerY - x, centerX + y,
                            centerY - x);
-        SDL_RenderDrawLine(m_renderer, centerX - y, centerY + x, centerX + y,
+        SDL_RenderDrawLine(sdl_renderer, centerX - y, centerY + x, centerX + y,
                            centerY + x);
 
         if (d < 0) {
@@ -77,7 +77,7 @@ void Renderer::drawCircle(Vec2 pos, double radius, int c) {
 }
 
 void Renderer::drawCollisionPoints(std::vector<Vec2>& cps) {
-    SDL_SetRenderDrawColor(m_renderer, 255, 165, 0, 255);
+    SDL_SetRenderDrawColor(sdl_renderer, 255, 165, 0, 255);
     const int boxSize = 10;
     for (const Vec2& cp : cps) {
         SDL_Rect rect;
@@ -86,18 +86,18 @@ void Renderer::drawCollisionPoints(std::vector<Vec2>& cps) {
         rect.w = boxSize;
         rect.h = boxSize;
 
-        SDL_RenderFillRect(m_renderer, &rect);
+        SDL_RenderFillRect(sdl_renderer, &rect);
     }
 
-    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(sdl_renderer, 0, 0, 0, 255);
 }
 
 void Renderer::drawArrow(Vec2 pos, Vec2 dir, double magnitude) {
-    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(sdl_renderer, 0, 0, 0, 255);
     Vec2 normalizedDir = dir.normalize();
     Vec2 end = {pos.x + normalizedDir.x * magnitude, pos.y + normalizedDir.y * magnitude};
 
-    SDL_RenderDrawLine(m_renderer, windowX(pos.x), windowY(pos.y), windowX(end.x),
+    SDL_RenderDrawLine(sdl_renderer, windowX(pos.x), windowY(pos.y), windowX(end.x),
                        windowY(end.y));
 
     double arrowHeadLength = 0.1;
@@ -114,9 +114,9 @@ void Renderer::drawArrow(Vec2 pos, Vec2 dir, double magnitude) {
         end.y - arrowHeadLength * (std::sin(-arrowHeadAngle) * normalizedDir.x +
                                    std::cos(-arrowHeadAngle) * normalizedDir.y)};
 
-    SDL_RenderDrawLine(m_renderer, windowX(end.x), windowY(end.y), windowX(left.x),
+    SDL_RenderDrawLine(sdl_renderer, windowX(end.x), windowY(end.y), windowX(left.x),
                        windowY(left.y));
-    SDL_RenderDrawLine(m_renderer, windowX(end.x), windowY(end.y), windowX(right.x),
+    SDL_RenderDrawLine(sdl_renderer, windowX(end.x), windowY(end.y), windowX(right.x),
                        windowY(right.y));
 }
 

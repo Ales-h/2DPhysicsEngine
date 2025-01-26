@@ -8,7 +8,7 @@ class Scene;
 
 class Renderer {
 public:
-    SDL_Renderer* m_renderer;
+    SDL_Renderer* sdl_renderer;
 
     Renderer(SDL_Renderer* renderer);
     SDL_Color getColor(int c);

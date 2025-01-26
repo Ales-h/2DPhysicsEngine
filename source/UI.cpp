@@ -81,14 +81,14 @@ void renderSceneSelectWindow(Application* app,
             SDL_DestroyTexture(textureScenePreview);
         }
         textureScenePreview = SDL_CreateTexture(
-            app->m_renderer->m_renderer, SDL_PIXELFORMAT_BGRA8888,
+            app->m_renderer->sdl_renderer, SDL_PIXELFORMAT_BGRA8888,
             SDL_TEXTUREACCESS_TARGET, window_width / 2, window_height / 2);
         SDL_Texture* fullsizeTexture = app->renderScenePreview(scenes[selected]);
         // textureScenePreview = fullsizeTexture;
-        SDL_SetRenderTarget(app->m_renderer->m_renderer, textureScenePreview);
+        SDL_SetRenderTarget(app->m_renderer->sdl_renderer, textureScenePreview);
 
-        SDL_RenderCopy(app->m_renderer->m_renderer, fullsizeTexture, NULL, NULL);
-        SDL_SetRenderTarget(app->m_renderer->m_renderer, nullptr);
+        SDL_RenderCopy(app->m_renderer->sdl_renderer, fullsizeTexture, NULL, NULL);
+        SDL_SetRenderTarget(app->m_renderer->sdl_renderer, nullptr);
     }
 
     ImGui::SameLine();  // Position the second child window next to the first
