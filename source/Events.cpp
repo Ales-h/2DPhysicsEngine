@@ -9,7 +9,7 @@
 
 namespace Events {
 
-void handleEvents(Application* app, bool& isRunning, Object* selected) {
+void handleEvents(Application* app, bool& isRunning, int& selected) {
     SDL_Event event;
     static bool isMouseHeld = false;
     static SpiralGenerator* spiralGen = nullptr;
@@ -53,17 +53,17 @@ void handleEvents(Application* app, bool& isRunning, Object* selected) {
     }  // event loop
 }
 
-Object* clickedOnObject(Application* app) {
+int clickedOnObject(Application* app) {
     int x, y = 0;
     SDL_GetMouseState(&x, &y);
     Vec2 mousePos = Vec2{((double)x) / 100, -((double)y) / 100};
 
     for (auto ob : app->m_objects) {
         if (ob->shape->containsPoint(mousePos)) {
-            return ob;
+            return ob->idx;
         }
     }
-    return nullptr;
+    return -1;
 }
 
 void spawnEvent(Application* app) {

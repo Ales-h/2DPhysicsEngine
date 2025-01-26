@@ -8,6 +8,10 @@ void circleShape::render(Renderer* renderer, int color) {
     renderer->drawCircle(rigidbody->pos, radius, color);
 }
 
+void circleShape::renderOutline(Renderer* renderer, int color) {
+    renderer->drawCircleOutline(rigidbody->pos, radius, color);
+}
+
 Vec2 circleShape::center() const { return rigidbody->pos; }
 // project the shape onto an axis and returns an interval
 Vec2 circleShape::project(const Axis& axis) const {

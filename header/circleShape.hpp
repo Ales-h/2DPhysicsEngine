@@ -11,6 +11,7 @@ public:
     circleShape(const circleShape& circ): Shape(circ), radius(circ.radius){}
     ~circleShape() override = default;
     void render(Renderer* renderer, int color) override;
+    void renderOutline(Renderer* renderer, int color) override;
     Vec2 center() const;
     Vec2 project(const Axis& axis) const override;
     double momentOfInertia() override;

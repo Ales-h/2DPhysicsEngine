@@ -18,7 +18,9 @@ public:
     int windowLength(const double& a);
 
     void drawRect(std::array<Vec2, 4>& vertices, int c);
+    void drawRectOutline(std::array<Vec2, 4>& vertices, int c);
     void drawCircle(Vec2 pos, double radius, int c);
+    void drawCircleOutline(Vec2 pos, double radius, int c);
     void drawCollisionPoints(std::vector<Vec2>& cps);
     void drawArrow(Vec2 pos, Vec2 dir, double magnitude);
 

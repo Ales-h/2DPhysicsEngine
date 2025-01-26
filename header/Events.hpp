@@ -5,11 +5,11 @@
 
 namespace Events {
 
-void handleEvents(Application* app, bool &isRunning, Object* selected);
+void handleEvents(Application* app, bool &isRunning, int& selected);
 
 void spawnEvent(Application* app);
 void dragEvent();
-Object* clickedOnObject(Application* app);
+int clickedOnObject(Application* app);
 
 }
 

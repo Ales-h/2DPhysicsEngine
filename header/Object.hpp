@@ -11,7 +11,8 @@ public:
         GREEN,
         BLUE,
         PURPLE,
-        YELLOW
+        YELLOW,
+        RED
     };
     enum Type {
         FIXED,

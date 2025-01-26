@@ -151,8 +151,8 @@ void Application::run() {
     // io.FontGlobalScale = 2.0f;
     (void)io;
 
-    // if(isSimulationRunning) then selectedObject = nullptr
-    Object* selectedObject = nullptr;
+    // if(isSimulationRunning) then selectedObjectID = -1 also when nothing is selected
+    int selectedObjectID = -1;
     std::vector<SceneManager::Scene*> scenes = SceneManager::loadScenes();
     UI::initUI(m_renderer->sdl_renderer);
 
@@ -164,7 +164,8 @@ void Application::run() {
         } else {
             appFlags &= ~AppFlags_iSSimulationRunning;
         }
-        Events::handleEvents(this, isRunning, selectedObject);
+        Events::handleEvents(this, isRunning, selectedObjectID);
+
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
@@ -196,6 +197,10 @@ void Application::run() {
 
         ImGui::Render();
         render();  // Simulation Render (SDL)
+        if (selectedObjectID != -1) {
+            m_objects[selectedObjectID]->shape->renderOutline(m_renderer,
+                                                              Object::Color::RED);
+        }
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(),
                                               m_renderer->sdl_renderer);
         SDL_RenderPresent(m_renderer->sdl_renderer);

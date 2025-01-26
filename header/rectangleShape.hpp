@@ -16,6 +16,7 @@ class rectangleShape : public Shape {
         : Shape(rect), width(rect.width), height(rect.height) {}
     //~rectangleShape() override = default;
     void render(Renderer* renderer, int color) override;
+    void renderOutline(Renderer* renderer, int color) override;
     Vec2 center();
     std::array<Vec2, 4> getVertices() const ;
     Vec2 closestVertex(const Vec2 p) const;

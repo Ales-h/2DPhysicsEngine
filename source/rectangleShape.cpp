@@ -15,6 +15,11 @@ void rectangleShape::render(Renderer* renderer, int color) {
     renderer->drawRect(vertices, color);
 }
 
+void rectangleShape::renderOutline(Renderer* renderer, int color) {
+    auto vertices = getVertices();
+    renderer->drawRectOutline(vertices, color);
+}
+
 Vec2 rectangleShape::center() { return rigidbody->pos; }
 
 // TODO refactor with array, vector is not needed
