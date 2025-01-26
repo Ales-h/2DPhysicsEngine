@@ -22,6 +22,7 @@ class rectangleShape : public Shape {
     std::vector<Axis> getAxes() const;
     Vec2 project(const Axis& axis)const override;
     double momentOfInertia() override;
+    bool containsPoint(const Vec2& point) override;
 };
 
 #endif

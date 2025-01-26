@@ -6,13 +6,12 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "Events.hpp"
 #include "GravityGenerator.hpp"
 #include "Object.hpp"
 #include "RigidBodySystem.hpp"
 #include "SceneManager.hpp"
 #include "UI.hpp"
-#include "Events.hpp"
-
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
 #include "imgui.h"
@@ -134,13 +133,12 @@ void Application::render() {
     }
 }
 
-
-
 void Application::run() {
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
     bool isRunning = true;
     bool isSimulationRunning = false;
+
     const double expected_frame_time = 1000.0 / 60.0;
     const double physics_time_step = 1.0 / 600.0;
     double accumulator = 0.0;
@@ -153,17 +151,20 @@ void Application::run() {
     // io.FontGlobalScale = 2.0f;
     (void)io;
 
+    // if(isSimulationRunning) then selectedObject = nullptr
+    Object* selectedObject = nullptr;
     std::vector<SceneManager::Scene*> scenes = SceneManager::loadScenes();
     UI::initUI(m_renderer->sdl_renderer);
-
-    SDL_Texture* textureA =
-        SDL_CreateTexture(m_renderer->sdl_renderer, SDL_PIXELFORMAT_BGRA8888,
-                          SDL_TEXTUREACCESS_TARGET, 1200, 800);
 
     ImGui_ImplSDL2_InitForSDLRenderer(m_window, m_renderer->sdl_renderer);
     ImGui_ImplSDLRenderer2_Init(m_renderer->sdl_renderer);
     while (isRunning) {
-        Events::handleEvents(this, isRunning);
+        if (isSimulationRunning) {
+            appFlags |= AppFlags_iSSimulationRunning;
+        } else {
+            appFlags &= ~AppFlags_iSSimulationRunning;
+        }
+        Events::handleEvents(this, isRunning, selectedObject);
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();

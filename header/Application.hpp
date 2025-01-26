@@ -18,6 +18,8 @@ enum AppFlags_ {
     AppFlags_Gravity = 1 << 0,
     AppFlags_ShowCollisionPoints = 1 << 1,
     AppFlags_ShowVelocityVectors = 1 << 2,
+    // to read if Simulation is running
+    AppFlags_iSSimulationRunning = 1 << 1,
     // which tool is selected(spawn object, drag object, spiral)
     AppFlags_DragObjectsEvent = 1 << 29,
     AppFlags_SpiralEvent = 1 << 30,

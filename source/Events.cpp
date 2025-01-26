@@ -9,7 +9,7 @@
 
 namespace Events {
 
-void handleEvents(Application* app, bool& isRunning) {
+void handleEvents(Application* app, bool& isRunning, Object* selected) {
     SDL_Event event;
     static bool isMouseHeld = false;
     static SpiralGenerator* spiralGen = nullptr;
@@ -22,6 +22,9 @@ void handleEvents(Application* app, bool& isRunning) {
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
+                    if (!isMouseHeld && !(app->appFlags & AppFlags_iSSimulationRunning)) {
+                        selected = clickedOnObject(app);
+                    }
                     isMouseHeld = true;
                     if (app->appFlags & AppFlags_SpiralEvent) {
                         if (!spiralGen) {
@@ -50,41 +53,49 @@ void handleEvents(Application* app, bool& isRunning) {
     }  // event loop
 }
 
+Object* clickedOnObject(Application* app) {
+    int x, y = 0;
+    SDL_GetMouseState(&x, &y);
+    Vec2 mousePos = Vec2{((double)x) / 100, -((double)y) / 100};
+
+    for (auto ob : app->m_objects) {
+        if (ob->shape->containsPoint(mousePos)) {
+            return ob;
+        }
+    }
+    return nullptr;
+}
+
 void spawnEvent(Application* app) {
     static Uint64 time = 0;
-    std::cout << SDL_GetPerformanceCounter() << '\n';
     if (SDL_GetPerformanceCounter() - time > 1500 || time == 0) {
         int x, y = 0;
         SDL_GetMouseState(&x, &y);
         Vec2 mousePos = Vec2{((double)x) / 100, -((double)y) / 100};
 
-    // for randomization
-     //  double maxSize = 0.3;
-     //   for (auto ob : app->m_objects) {
-     //       Vec2 rbPos = ob->shape->rigidbody->pos;
-     //       double distance = (mousePos - rbPos).magnitude();
-     //       if(distance < maxSize){
-     //           maxSize = distance;
-     //       }
-     //   }
-        //double randomSize = ((double)(rand() % (int)(maxSize * 1000)))/1000;
+        // for randomization
+        //  double maxSize = 0.3;
+        //   for (auto ob : app->m_objects) {
+        //       Vec2 rbPos = ob->shape->rigidbody->pos;
+        //       double distance = (mousePos - rbPos).magnitude();
+        //       if(distance < maxSize){
+        //           maxSize = distance;
+        //       }
+        //   }
+        // double randomSize = ((double)(rand() % (int)(maxSize * 1000)))/1000;
         double randomSize = 0.3;
         Rigidbody* rb = new Rigidbody(mousePos.x, mousePos.y);
         rb->m = 10;
-        //random bool
+        // random bool
         Shape* sh;
-        if(rand() % 2 == 0){
+        if (rand() % 2 == 0) {
             sh = new rectangleShape(rb, randomSize, randomSize);
         } else {
             sh = new circleShape(rb, randomSize);
         }
-        if(!sh){
-            std::cout << "shape not init" << '\n';
-        }
         Object* ob = new Object();
         ob->init(app, sh, Object::DYNAMIC, Object::Color(rand() % 4));
         time = SDL_GetPerformanceCounter();
-
     }
 }
 void dragEvent() {}

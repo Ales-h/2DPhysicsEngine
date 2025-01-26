@@ -14,6 +14,7 @@ public:
     Vec2 center() const;
     Vec2 project(const Axis& axis) const override;
     double momentOfInertia() override;
+    bool containsPoint(const Vec2& point) override;
 };
 
 #endif
