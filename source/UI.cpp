@@ -223,9 +223,9 @@ void renderToolsBar(Application* app, bool& isSimRunning) {
         app->appFlags &= ~AppFlags_DragObjectsEvent;
         app->appFlags |= AppFlags_SpawnObjectsEvent;
     }
-    for(int i = 0; i < 3; ++i){
-    ImGui::PopStyleVar();
-    ImGui::PopStyleColor();
+    for (int i = 0; i < 3; ++i) {
+        ImGui::PopStyleVar();
+        ImGui::PopStyleColor();
     }
 
     ImGui::End();
@@ -257,9 +257,10 @@ void renderSettingWindow(Application* app) {
     }
     ImGui::Text("Gravitational accelaration");
     ImGui::SameLine();
+    // TODO : remake the tooltip with ImGui::HelpMarker
     ImGui::Text("(?)");
     ImGui::SetItemTooltip(
-        "Gravitacni zrychleni je hodnota, ktera telesa urychluje smerem dolu");
+        "Gravitacni zrychleni je hodnota, ktera telesa urychluje na ose y");
     ImGui::InputDouble("###a31553", gravA, 0.01f, 1.0f, "%.8f");
     if (!gravity) {
         ImGui::EndDisabled();
@@ -295,6 +296,46 @@ void renderSettingWindow(Application* app) {
 
     ImGui::End();
 }
-void renderObjectWindow();
+
+void renderObjectWindow(Application* app, const int objectIdx) {
+    assert(app->m_objects.size() > 0);
+    Object* ob = app->m_objects[objectIdx];
+    Shape* shape = ob->shape;
+    Rigidbody* rb = shape->rigidbody;
+    char buf[25];
+    snprintf(buf, sizeof(buf), "Object %d", objectIdx);
+    ImGui::Begin(buf);
+    ImGui::Text("Object %d Data", objectIdx);
+
+    // COLOR TODO : Refactor colors in Object and Renderer to not have to change it
+    // everywhere when adding a color
+    const char* colors[] = {"Green", "Blue", "Purple", "Yellow", "Red"};
+    static int colorCurrent = 0;
+    ImGui::Combo("Color", &colorCurrent, colors, IM_ARRAYSIZE(colors));
+
+    // OBJECT TYPE
+    const char* obTypes[] = {"Fixed", "Dynamic"};
+    static int obTypeCurrent = 1;
+    ImGui::Combo("Object Type", &obTypeCurrent, obTypes, IM_ARRAYSIZE(obTypes));
+
+    // Vector input
+    float totalWidth = ImGui::GetContentRegionAvail().x;
+    float inputWidth =
+        ((totalWidth * 0.9f - ImGui::CalcTextSize("x: y:").x) / 2.0f);
+
+    ImGui::Text("Position");
+    ImGui::Text("x:");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(inputWidth);
+    ImGui::InputDouble("###posx", &rb->pos.x);
+
+    ImGui::SameLine();
+    ImGui::Text("y:");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(inputWidth);
+    ImGui::InputDouble("###posy", &rb->pos.y);
+
+    ImGui::End();
+}
 
 }  // namespace UI

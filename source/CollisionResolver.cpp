@@ -186,22 +186,22 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         rbA->omega += -ra.cross(impulse) * objectA->inverseInertia();
         rbB->v += impulse / rbB->m;
         rbB->omega += (rb.cross(impulse) * objectB->inverseInertia());
-        if(objectA->color == Object::GREEN || objectB->color == Object::GREEN){
-        std::cout << "IMPULSE:" << impulse << "\n";
-        std::cout << "InverseInertia" << objectA->inverseInertia() << "\n";
-        std::cout << "omega change:" << (rb.cross(impulse) * objectA->inverseInertia())
-                  << "\n";
-        std::cout << "omega " << rbA->omega * (180. / M_PI) << "\n";
-        std::cout << "theta " << rbA->theta * (180. / M_PI) << "\n";
-        std::cout << "vel" << rbA->v << "\n";
+        //if(objectA->color == Object::GREEN || objectB->color == Object::GREEN){
+       // std::cout << "IMPULSE:" << impulse << "\n";
+       // std::cout << "InverseInertia" << objectA->inverseInertia() << "\n";
+       // std::cout << "omega change:" << (rb.cross(impulse) * objectA->inverseInertia())
+       //           << "\n";
+       // std::cout << "omega " << rbA->omega * (180. / M_PI) << "\n";
+       // std::cout << "theta " << rbA->theta * (180. / M_PI) << "\n";
+       // std::cout << "vel" << rbA->v << "\n";
 
-        std::cout << "vel before" << rbB->v << "\n";
-        std::cout << "omega change:" << (rb.cross(impulse) * objectB->inverseInertia())
-                  << "\n";
-        std::cout << "omega " << rbB->omega * (180. / M_PI) << "\n";
-        std::cout << "theta " << rbB->theta * (180. / M_PI) << "\n";
-        std::cout << "vel" << rbB->v << "\n";
-        }
+       // std::cout << "vel before" << rbB->v << "\n";
+       // std::cout << "omega change:" << (rb.cross(impulse) * objectB->inverseInertia())
+       //           << "\n";
+       // std::cout << "omega " << rbB->omega * (180. / M_PI) << "\n";
+       // std::cout << "theta " << rbB->theta * (180. / M_PI) << "\n";
+       // std::cout << "vel" << rbB->v << "\n";
+        //}
     }
 //    rbA->checkRestingPosition();
 //    rbB->checkRestingPosition();

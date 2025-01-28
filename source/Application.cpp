@@ -190,6 +190,9 @@ void Application::run() {
             start = SDL_GetPerformanceCounter();
         }
         UI::renderSettingWindow(this);
+        if (m_objects.size() > 0) {
+            UI::renderObjectWindow(this, 0);
+        }
 
         if (m_scene == nullptr) {
             UI::renderSceneSelectWindow(this, scenes);

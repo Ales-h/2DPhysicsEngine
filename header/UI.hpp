@@ -13,7 +13,7 @@ SDL_Texture* loadTexture(SDL_Renderer* renderer, std::string path);
 void renderSceneSelectWindow(Application* app, std::vector<SceneManager::Scene*>& scenes);
 void renderSettingWindow(Application* app);
 void renderToolsBar(Application* app, bool& isSimRunning);
-void renderObjectWindow();
+void renderObjectWindow(Application* app, const int objectIdx);
 
 }
 
