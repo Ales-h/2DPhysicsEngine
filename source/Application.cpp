@@ -153,6 +153,8 @@ void Application::run() {
 
     // if(isSimulationRunning) then selectedObjectID = -1 also when nothing is selected
     int selectedObjectID = -1;
+    // Indices of objects to render a ObjectSettingsWindow
+    std::vector<int> selectedWinIndices;
     std::vector<SceneManager::Scene*> scenes = SceneManager::loadScenes();
     UI::initUI(m_renderer->sdl_renderer);
 
@@ -185,25 +187,30 @@ void Application::run() {
             }
         }
         bool ifChanged = isSimulationRunning;
-        UI::renderToolsBar(this, isSimulationRunning);
+        UI::renderToolbar(this, isSimulationRunning);
         if (ifChanged != isSimulationRunning) {
             start = SDL_GetPerformanceCounter();
         }
         UI::renderSettingWindow(this);
-        if (m_objects.size() > 0) {
-            UI::renderObjectWindow(this, 0);
-        }
 
         if (m_scene == nullptr) {
             UI::renderSceneSelectWindow(this, scenes);
         }
 
-        ImGui::Render();
+        if (m_objects.size() > 0) {
+            for (int i : selectedWinIndices) {
+                UI::renderObjectWindow(this, i);
+            }
+        }
         render();  // Simulation Render (SDL)
         if (selectedObjectID != -1) {
+            Shape* tmp = m_objects[selectedObjectID]->shape;
             m_objects[selectedObjectID]->shape->renderOutline(m_renderer,
                                                               Object::Color::RED);
+            UI::renderObjectSettingsButton(selectedWinIndices, selectedObjectID,
+                                           tmp->rigidbody->pos);
         }
+        ImGui::Render();
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(),
                                               m_renderer->sdl_renderer);
         SDL_RenderPresent(m_renderer->sdl_renderer);

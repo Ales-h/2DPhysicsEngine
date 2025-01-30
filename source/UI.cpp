@@ -173,7 +173,7 @@ void renderSceneSelectWindow(Application* app,
         }
     }
 }
-void renderToolsBar(Application* app, bool& isSimRunning) {
+void renderToolbar(Application* app, bool& isSimRunning) {
     ImGui::SetNextWindowPos(ImVec2{0, 0});
     ImGui::SetNextWindowSize(ImVec2{45, 185});
     ImGui::Begin("test", NULL, flagsToolbar);
@@ -297,6 +297,30 @@ void renderSettingWindow(Application* app) {
     ImGui::End();
 }
 
+void renderObjectSettingsButton(std::vector<int>& objectWinIndices, int selected,
+                                Vec2 pos) {
+    // converting simulation coordinates to screen coordinates
+    Vec2 screenPos = Vec2{pos.x * 100 - 5, -pos.y * 100 - 5};
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0.f, 0.f));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
+    ImGui::SetNextWindowPos(ImVec2{(float)screenPos.x, (float)screenPos.y});
+    ImGui::SetNextWindowSize(ImVec2{10, 10});
+    ImGui::Begin(
+        "Object Setting button", NULL,
+        flagsToolbar | ImGuiWindowFlags_NoDecoration);
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
+    if (ImGui::ImageButton("setting", (ImTextureID)settingTexture, ImVec2(10, 10))) {
+        if (std::find(objectWinIndices.begin(), objectWinIndices.end(), selected) ==
+            objectWinIndices.end()) {
+            objectWinIndices.push_back(selected);
+        }
+    }
+    ImGui::PopStyleVar();
+    ImGui::End();
+    ImGui::PopStyleVar();
+    ImGui::PopStyleVar();
+}
+
 void renderObjectWindow(Application* app, const int objectIdx) {
     assert(app->m_objects.size() > 0);
     Object* ob = app->m_objects[objectIdx];
@@ -320,8 +344,7 @@ void renderObjectWindow(Application* app, const int objectIdx) {
 
     // Vector input
     float totalWidth = ImGui::GetContentRegionAvail().x;
-    float inputWidth =
-        ((totalWidth * 0.9f - ImGui::CalcTextSize("x: y:").x) / 2.0f);
+    float inputWidth = ((totalWidth * 0.9f - ImGui::CalcTextSize("x: y:").x) / 2.0f);
 
     ImGui::Text("Position");
     ImGui::Text("x:");
