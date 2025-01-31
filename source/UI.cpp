@@ -305,9 +305,8 @@ void renderObjectSettingsButton(std::vector<int>& objectWinIndices, int selected
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
     ImGui::SetNextWindowPos(ImVec2{(float)screenPos.x, (float)screenPos.y});
     ImGui::SetNextWindowSize(ImVec2{10, 10});
-    ImGui::Begin(
-        "Object Setting button", NULL,
-        flagsToolbar | ImGuiWindowFlags_NoDecoration);
+    ImGui::Begin("Object Setting button", NULL,
+                 flagsToolbar | ImGuiWindowFlags_NoDecoration);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
     if (ImGui::ImageButton("setting", (ImTextureID)settingTexture, ImVec2(10, 10))) {
         if (std::find(objectWinIndices.begin(), objectWinIndices.end(), selected) ==
@@ -335,14 +334,31 @@ void renderObjectWindow(Application* app, const int objectIdx) {
 
     // OBJECT TYPE
     const char* obTypes[] = {"Fixed", "Dynamic"};
-    static int obTypeCurrent = 1;
-    ImGui::Combo("Object Type", &obTypeCurrent, obTypes, IM_ARRAYSIZE(obTypes));
+    int obTypeChanged = ob->type;
+    ImGui::Combo("Object Type", (int*)&ob->type, obTypes, IM_ARRAYSIZE(obTypes));
+    if (obTypeChanged != ob->type) {
+        if (ob->type == Object::FIXED) {
+            app->m_rbSystem->removeRigidbody(rb);
+        } else {
+            rb->m = 1;
+            app->m_rbSystem->addRigidbody(rb);
+        }
+    }
 
+    if (ob->type == Object::FIXED) {
+        ImGui::BeginDisabled();
+    }
+    ImGui::Text("Mass: ");
+    ImGui::SameLine();
+    ImGui::InputDouble("###mass", &rb->m);
+    if (ob->type == Object::FIXED) {
+        ImGui::EndDisabled();
+    }
     // Vector input
     float totalWidth = ImGui::GetContentRegionAvail().x;
     float inputWidth = ((totalWidth * 0.9f - ImGui::CalcTextSize("x: y:").x) / 2.0f);
 
-    ImGui::Text("Position");
+    ImGui::Text("Position [m]");
     ImGui::Text("x:");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(inputWidth);
@@ -353,6 +369,54 @@ void renderObjectWindow(Application* app, const int objectIdx) {
     ImGui::SameLine();
     ImGui::SetNextItemWidth(inputWidth);
     ImGui::InputDouble("###posy", &rb->pos.y);
+
+    ImGui::Text("Velocity [m/s]");
+    ImGui::Text("x:");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(inputWidth);
+    ImGui::InputDouble("###velx", &rb->v.x);
+
+    ImGui::SameLine();
+    ImGui::Text("y:");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(inputWidth);
+    ImGui::InputDouble("###vely", &rb->v.y);
+
+    ImGui::Text("Accelaration [m/s^2]");
+    ImGui::Text("x:");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(inputWidth);
+    ImGui::InputDouble("###accx", &rb->a.x);
+
+    ImGui::SameLine();
+    ImGui::Text("y:");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(inputWidth);
+    ImGui::InputDouble("###accy", &rb->a.y);
+
+    ImGui::Text("");
+    ImGui::Text("Rotation");
+    // THETA
+    ImGui::Text("theta: ");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(inputWidth * 1.5);
+    ImGui::InputDouble("###theta", &rb->theta);
+    ImGui::SameLine();
+    ImGui::Text("rad");
+    // OMEGA
+    ImGui::Text("omega: ");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(inputWidth * 1.5);
+    ImGui::InputDouble("###omega", &rb->omega);
+    ImGui::SameLine();
+    ImGui::Text("rad/s");
+    // EPSILON
+    ImGui::Text("epsilon: ");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(inputWidth * 1.5);
+    ImGui::InputDouble("###epsilon", &rb->epsilon);
+    ImGui::SameLine();
+    ImGui::Text("rad/s^2");
 
     ImGui::End();
 }
