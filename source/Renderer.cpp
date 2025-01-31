@@ -5,21 +5,14 @@
 #include <SDL_ttf.h>
 
 #include <cmath>
-#include <iostream>
+
+SDL_Color getColor(int c) { return sdlColors[c]; }
 
 Renderer::Renderer(SDL_Renderer* renderer) {
     sdl_renderer = renderer;
 
-    m_colors = {
-        SDL_Color{70, 255, 178},   // Green
-        SDL_Color{70, 255, 1},     // Blue
-        SDL_Color{183, 124, 255},  // Purple
-        SDL_Color{255, 234, 101},  // Yellow
-        SDL_Color{255, 0, 0}       // Red
-    };
 }
 
-SDL_Color Renderer::getColor(int c) { return m_colors[c]; }
 
 // multiply by 100, make it a int,  1 unit in physics engine = 100 pixels
 int Renderer::windowX(const double& x) { return static_cast<int>(x * 100); }

@@ -47,8 +47,10 @@ Application::Application(int _fps) {
 
     m_rbSystem = new RigidbodySystem();
     m_cResolver = new CollisionResolver();
-    appFlags = AppFlags_ShowCollisionPoints | AppFlags_ShowVelocityVectors;
+    appFlags = 0;
+    appFlags |= AppFlags_ShowCollisionPoints | AppFlags_ShowVelocityVectors;
     m_scene = nullptr;
+    std::cout << std::bitset<32>(appFlags) << '\n';
 }
 
 Application::~Application() {
@@ -206,7 +208,7 @@ void Application::run() {
         if (selectedObjectID != -1) {
             Shape* tmp = m_objects[selectedObjectID]->shape;
             m_objects[selectedObjectID]->shape->renderOutline(m_renderer,
-                                                              Object::Color::RED);
+                                                              Color::RED);
             UI::renderObjectSettingsButton(selectedWinIndices, selectedObjectID,
                                            tmp->rigidbody->pos);
         }

@@ -94,7 +94,7 @@ void spawnEvent(Application* app) {
             sh = new circleShape(rb, randomSize);
         }
         Object* ob = new Object();
-        ob->init(app, sh, Object::DYNAMIC, Object::Color(rand() % 4));
+        ob->init(app, sh, Object::DYNAMIC, Color(rand() % 4));
         time = SDL_GetPerformanceCounter();
     }
 }

@@ -331,11 +331,7 @@ void renderObjectWindow(Application* app, const int objectIdx) {
     ImGui::Begin(buf);
     ImGui::Text("Object %d Data", objectIdx);
 
-    // COLOR TODO : Refactor colors in Object and Renderer to not have to change it
-    // everywhere when adding a color
-    const char* colors[] = {"Green", "Blue", "Purple", "Yellow", "Red"};
-    static int colorCurrent = 0;
-    ImGui::Combo("Color", &colorCurrent, colors, IM_ARRAYSIZE(colors));
+    ImGui::Combo("Color", (int*)&ob->color, colorNames, IM_ARRAYSIZE(colorNames));
 
     // OBJECT TYPE
     const char* obTypes[] = {"Fixed", "Dynamic"};

@@ -1,17 +1,35 @@
 #ifndef PHYSOLVER_RENDERER_HPP
 #define PHYSOLVER_RENDERER_HPP
-#include <vector>
-#include <array>
 #include <SDL.h>
+#include <SDL_pixels.h>
+
+#include <array>
+#include <vector>
+
 #include "Vec2.hpp"
-class Scene;
+
+// Color refactor
+enum Color { GREEN, BLUE, PURPLE, YELLOW, RED, SIZE };
+
+constexpr SDL_Color sdlColors[SIZE] = {
+    SDL_Color{70, 255, 178},   // Green
+    SDL_Color{68, 200, 252},     // Blue
+    SDL_Color{183, 124, 255},  // Purple
+    SDL_Color{255, 234, 101},  // Yellow
+    SDL_Color{255, 0, 0}       // Red
+};
+
+constexpr const char* colorNames[SIZE] = {
+    "Green", "Blue", "Purple", "Yellow", "Red",
+};
+
+SDL_Color getColor(int c);
 
 class Renderer {
-public:
+   public:
     SDL_Renderer* sdl_renderer;
 
     Renderer(SDL_Renderer* renderer);
-    SDL_Color getColor(int c);
 
     int windowX(const double& x);
     int windowY(const double& y);
@@ -23,10 +41,6 @@ public:
     void drawCircleOutline(Vec2 pos, double radius, int c);
     void drawCollisionPoints(std::vector<Vec2>& cps);
     void drawArrow(Vec2 pos, Vec2 dir, double magnitude);
-
-private:
-    // TODO refactor with array, vector is not needed
-    std::vector<SDL_Color> m_colors;
 
 };
 

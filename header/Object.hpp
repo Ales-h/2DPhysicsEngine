@@ -7,13 +7,6 @@ class Application;
 
 class Object {
 public:
-    enum Color {
-        GREEN,
-        BLUE,
-        PURPLE,
-        YELLOW,
-        RED
-    };
     enum Type {
         FIXED,
         DYNAMIC,
