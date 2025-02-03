@@ -261,7 +261,7 @@ void renderSettingWindow(Application* app, bool& open) {
     ImGui::Begin("Settings", &open);
 
     // GRAVITY CHECKBOX
-    static bool gravity = app->appFlags & AppFlags_Gravity;
+     bool gravity = app->appFlags & AppFlags_Gravity;
     bool gravityChanged = gravity;
     ImGui::Checkbox("gravity", &gravity);
     if (gravity != gravityChanged) {

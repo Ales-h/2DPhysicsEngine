@@ -95,6 +95,9 @@ void Application::clear() {
     // delete RbSystem
     delete m_rbSystem;
     m_rbSystem = new RigidbodySystem();
+
+    appFlags = 0;
+    appFlags |= AppFlags_ShowCollisionPoints | AppFlags_ShowVelocityVectors;
 }
 
 SDL_Texture* Application::renderScenePreview(SceneManager::Scene* scene) {
