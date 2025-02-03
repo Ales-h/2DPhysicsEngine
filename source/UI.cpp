@@ -174,7 +174,7 @@ void renderSceneSelectWindow(Application* app,
     }
 }
 void renderToolbar(Application* app, bool& isSimRunning) {
-    ImGui::SetNextWindowPos(ImVec2{0, 0});
+    ImGui::SetNextWindowPos(ImVec2{0, 15});
     ImGui::SetNextWindowSize(ImVec2{45, 185});
     ImGui::Begin("test", NULL, flagsToolbar);
 
@@ -230,8 +230,35 @@ void renderToolbar(Application* app, bool& isSimRunning) {
 
     ImGui::End();
 }
-void renderSettingWindow(Application* app) {
-    ImGui::Begin("Settings");
+
+void renderMainMenuBar(bool& isRunning, bool& showSettings) {
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("File")) {
+            if (ImGui::MenuItem("Select Scene")) {
+            }
+            if (ImGui::MenuItem("Settings")) {
+                showSettings = true;
+            }
+            if (ImGui::MenuItem("Save")) {
+                // Handle "Save" action
+            }
+            if (ImGui::MenuItem("Exit")) {
+                isRunning = false;
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Help")) {
+            if (ImGui::MenuItem("About")) {
+            }
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+}
+
+void renderSettingWindow(Application* app, bool& open) {
+    ImGui::Begin("Settings", &open);
 
     // GRAVITY CHECKBOX
     static bool gravity = app->appFlags & AppFlags_Gravity;
@@ -306,7 +333,9 @@ void renderObjectSettingsButton(std::vector<int>& objectWinIndices, int selected
     ImGui::SetNextWindowPos(ImVec2{(float)screenPos.x, (float)screenPos.y});
     ImGui::SetNextWindowSize(ImVec2{10, 10});
     ImGui::Begin("Object Setting button", NULL,
-                 flagsToolbar | ImGuiWindowFlags_NoDecoration);
+                 flagsToolbar | ImGuiWindowFlags_NoDecoration |
+                     ImGuiWindowFlags_NoSavedSettings |
+                     ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
     if (ImGui::ImageButton("setting", (ImTextureID)settingTexture, ImVec2(10, 10))) {
         if (std::find(objectWinIndices.begin(), objectWinIndices.end(), selected) ==
@@ -320,14 +349,14 @@ void renderObjectSettingsButton(std::vector<int>& objectWinIndices, int selected
     ImGui::PopStyleVar();
 }
 
-void renderObjectWindow(Application* app, const int objectIdx) {
+void renderObjectWindow(Application* app, const int objectIdx, bool& open) {
     assert(app->m_objects.size() > 0);
     Object* ob = app->m_objects[objectIdx];
     Shape* shape = ob->shape;
     Rigidbody* rb = shape->rigidbody;
     char buf[25];
     snprintf(buf, sizeof(buf), "Object %d", objectIdx);
-    ImGui::Begin(buf);
+    ImGui::Begin(buf, &open);
     ImGui::Text("Object %d Data", objectIdx);
 
     ImGui::Combo("Color", (int*)&ob->color, colorNames, IM_ARRAYSIZE(colorNames));

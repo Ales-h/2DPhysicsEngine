@@ -50,7 +50,6 @@ Application::Application(int _fps) {
     appFlags = 0;
     appFlags |= AppFlags_ShowCollisionPoints | AppFlags_ShowVelocityVectors;
     m_scene = nullptr;
-    std::cout << std::bitset<32>(appFlags) << '\n';
 }
 
 Application::~Application() {
@@ -140,6 +139,7 @@ void Application::run() {
 
     bool isRunning = true;
     bool isSimulationRunning = false;
+    bool showSimSettings = true;
 
     const double expected_frame_time = 1000.0 / 60.0;
     const double physics_time_step = 1.0 / 600.0;
@@ -190,25 +190,32 @@ void Application::run() {
         }
         bool ifChanged = isSimulationRunning;
         UI::renderToolbar(this, isSimulationRunning);
+        UI::renderMainMenuBar(isRunning, showSimSettings);
         if (ifChanged != isSimulationRunning) {
             start = SDL_GetPerformanceCounter();
         }
-        UI::renderSettingWindow(this);
+        if (showSimSettings) {
+            UI::renderSettingWindow(this, showSimSettings);
+        }
 
         if (m_scene == nullptr) {
             UI::renderSceneSelectWindow(this, scenes);
         }
 
         if (m_objects.size() > 0) {
-            for (int i : selectedWinIndices) {
-                UI::renderObjectWindow(this, i);
+            // iterating backwards to avoid shifting issues
+            for (int i = selectedWinIndices.size() - 1; i >= 0; --i) {
+                bool isOpen = true;
+                UI::renderObjectWindow(this, selectedWinIndices[i], isOpen);
+                if (!isOpen) {
+                    selectedWinIndices.erase(selectedWinIndices.begin() + i);
+                }
             }
         }
         render();  // Simulation Render (SDL)
         if (selectedObjectID != -1) {
             Shape* tmp = m_objects[selectedObjectID]->shape;
-            m_objects[selectedObjectID]->shape->renderOutline(m_renderer,
-                                                              Color::RED);
+            m_objects[selectedObjectID]->shape->renderOutline(m_renderer, Color::RED);
             UI::renderObjectSettingsButton(selectedWinIndices, selectedObjectID,
                                            tmp->rigidbody->pos);
         }
