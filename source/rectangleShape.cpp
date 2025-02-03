@@ -88,9 +88,11 @@ Vec2 rectangleShape::project(const Axis& axis) const {
 }
 
 double rectangleShape::momentOfInertia() {
-    double w = width;
-    double h = height;
-    return 1. / 12. * rigidbody->m * (w * w + h * h);
+    return 1. / 12. * rigidbody->m * (width * width + height * height);
+}
+
+double rectangleShape::getRadius(){
+    return std::max(width, height);
 }
 
 bool rectangleShape::containsPoint(const Vec2& point) {

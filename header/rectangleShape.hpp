@@ -24,6 +24,8 @@ class rectangleShape : public Shape {
     Vec2 project(const Axis& axis)const override;
     double momentOfInertia() override;
     bool containsPoint(const Vec2& point) override;
+    // for rectangles we return the longer side
+    double getRadius() override;
 };
 
 #endif

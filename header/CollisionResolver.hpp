@@ -3,6 +3,7 @@
 
 #include <tuple>
 #include <utility>
+#include <vector>
 
 #include "Collision.hpp"
 #include "Object.hpp"
@@ -19,6 +20,10 @@ class CollisionResolver {
     void renderCollisionPoints(Renderer* renderer);
 
    private:
+    std::vector<Collision> narrowPhaseCheck(std::vector<Object*> objects);
+    // radius is for rectangles the longer side of the rect
+    bool narrowPhaseDetection(const Vec2 posA, const Vec2 posB, const double radiusA,
+                         const double radiusB);
     Vec2 detectCollision(const circleShape* circle, const rectangleShape* rect);
     Vec2 detectCollision(const rectangleShape* rect, const circleShape* circle);
     Vec2 detectCollision(const rectangleShape* r1, const rectangleShape* r2);
@@ -46,10 +51,9 @@ class CollisionResolver {
 
     void resolveMTV(Collision* collision);
 
-public:
+   public:
     float _e;  // součinitel restituce
-private:
-    std::vector<Collision> collisions;
+   private:
     std::vector<Collision> cpsToRender;
 };
 

@@ -17,6 +17,7 @@ public:
     virtual Vec2 project(const Axis& axis) const = 0;
     virtual double momentOfInertia() = 0;
     virtual bool containsPoint(const Vec2& point) = 0;
+    virtual double getRadius() = 0;
 };
 
 #endif

@@ -158,11 +158,11 @@ void CollisionResolver::resolveCollision(Collision* collision) {
 
         double vAlongNormal = relativeVelocity.dot(normal);
 
-        //collision with fixed bodies dont work with this check
-      //  if(vAlongNormal > 0){
-      //      impulses.push_back(Vec2::zero());
-      //      continue;
-      //  }
+        // collision with fixed bodies dont work with this check
+        //  if(vAlongNormal > 0){
+        //      impulses.push_back(Vec2::zero());
+        //      continue;
+        //  }
 
         double raNdotProd = raNormal.dot(normal);
         double rbNdotProd = rbNormal.dot(normal);
@@ -172,7 +172,7 @@ void CollisionResolver::resolveCollision(Collision* collision) {
 
         j /= inverseMassSum + (raNdotProd * raNdotProd) * objectA->inverseInertia() +
              (rbNdotProd * rbNdotProd) * objectB->inverseInertia();
-       //j /= static_cast<double>(cps.size());
+        // j /= static_cast<double>(cps.size());
 
         Vec2 impulse = normal * j;
         impulses.push_back(impulse);
@@ -186,25 +186,25 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         rbA->omega += -ra.cross(impulse) * objectA->inverseInertia();
         rbB->v += impulse / rbB->m;
         rbB->omega += (rb.cross(impulse) * objectB->inverseInertia());
-        //if(objectA->color == Object::GREEN || objectB->color == Object::GREEN){
-       // std::cout << "IMPULSE:" << impulse << "\n";
-       // std::cout << "InverseInertia" << objectA->inverseInertia() << "\n";
-       // std::cout << "omega change:" << (rb.cross(impulse) * objectA->inverseInertia())
-       //           << "\n";
-       // std::cout << "omega " << rbA->omega * (180. / M_PI) << "\n";
-       // std::cout << "theta " << rbA->theta * (180. / M_PI) << "\n";
-       // std::cout << "vel" << rbA->v << "\n";
+        // if(objectA->color == Object::GREEN || objectB->color == Object::GREEN){
+        // std::cout << "IMPULSE:" << impulse << "\n";
+        // std::cout << "InverseInertia" << objectA->inverseInertia() << "\n";
+        // std::cout << "omega change:" << (rb.cross(impulse) * objectA->inverseInertia())
+        //           << "\n";
+        // std::cout << "omega " << rbA->omega * (180. / M_PI) << "\n";
+        // std::cout << "theta " << rbA->theta * (180. / M_PI) << "\n";
+        // std::cout << "vel" << rbA->v << "\n";
 
-       // std::cout << "vel before" << rbB->v << "\n";
-       // std::cout << "omega change:" << (rb.cross(impulse) * objectB->inverseInertia())
-       //           << "\n";
-       // std::cout << "omega " << rbB->omega * (180. / M_PI) << "\n";
-       // std::cout << "theta " << rbB->theta * (180. / M_PI) << "\n";
-       // std::cout << "vel" << rbB->v << "\n";
+        // std::cout << "vel before" << rbB->v << "\n";
+        // std::cout << "omega change:" << (rb.cross(impulse) * objectB->inverseInertia())
+        //           << "\n";
+        // std::cout << "omega " << rbB->omega * (180. / M_PI) << "\n";
+        // std::cout << "theta " << rbB->theta * (180. / M_PI) << "\n";
+        // std::cout << "vel" << rbB->v << "\n";
         //}
     }
-//    rbA->checkRestingPosition();
-//    rbB->checkRestingPosition();
+    //    rbA->checkRestingPosition();
+    //    rbB->checkRestingPosition();
 }
 
 // TODO Refactor
@@ -235,29 +235,24 @@ void CollisionResolver::resolveMTV(Collision* collision) {
         Vec2 mtv1 = mtv * (mass2 / totalMass);
         Vec2 mtv2 = mtv * (mass1 / totalMass);
 
-       // objectA->translate(-mtv/2.);
-       // objectB->translate(mtv/2.);
+        // objectA->translate(-mtv/2.);
+        // objectB->translate(mtv/2.);
         objectA->translate(-mtv1);
         objectB->translate(mtv2);
     }
 }
 
 void CollisionResolver::checkCollisions(Application* app) {
-    collisions.clear();
-    for (int i = 0; i < app->m_objects.size(); ++i) {
-        Object* objectA = app->m_objects[i];
-        for (int j = i + 1; j < app->m_objects.size(); ++j) {
-            Object* objectB = app->m_objects[j];
-            Vec2 mtv = detectCollision(objectA->shape, objectB->shape);
-            if (mtv.x == 0 && mtv.y == 0) {
-                continue;
-            }
-            Collision c(objectA, objectB, mtv);
-            collisions.push_back(c);
-        }
-    }
+    std::vector<Collision> collisions = narrowPhaseCheck(app->m_objects);
 
     for (int i = 0; i < collisions.size(); ++i) {
+        Vec2 mtv = detectCollision(collisions[i].A->shape, collisions[i].B->shape);
+        if(mtv.x == 0 && mtv.y == 0){
+            collisions.erase(collisions.begin() + i);
+            i--;
+            continue;
+        }
+        collisions[i].mtv = mtv;
         resolveMTV(&collisions[i]);
         getCollisionPoints(&collisions[i]);
         if (cpsToRender.size() == 0) {
@@ -274,6 +269,40 @@ void CollisionResolver::checkCollisions(Application* app) {
             }
         }
         resolveCollision(&collisions[i]);
+    }
+}
+
+std::vector<Collision> CollisionResolver::narrowPhaseCheck(std::vector<Object*> objects) {
+    std::vector<Collision> collisions;
+    std::vector<double> radii;  // plural radius
+    for (int i = 0; i < objects.size(); ++i) {
+        Shape* shape = objects[i]->shape;
+        radii.push_back(shape->getRadius());
+    }
+
+    for (int i = 0; i < objects.size(); ++i) {
+        Vec2 posA = objects[i]->shape->rigidbody->pos;
+        for (int j = i + 1; j < objects.size(); ++j) {
+            Vec2 posB = objects[j]->shape->rigidbody->pos;
+            if(narrowPhaseDetection(posA, posB, radii[i], radii[j])){
+                collisions.push_back(Collision(objects[i], objects[j], -1));
+            }
+        }
+    }
+
+    return collisions;
+}
+
+// we stay in squared value to avoid square root overhead
+bool CollisionResolver::narrowPhaseDetection(const Vec2 posA, const Vec2 posB,
+                                             const double radiusA, const double radiusB) {
+    Vec2 AtoB = posB - posA;
+    double distSq = AtoB.dot(AtoB);
+
+    if (distSq < radiusA + radiusB) {
+        return true;
+    } else {
+        return false;
     }
 }
 

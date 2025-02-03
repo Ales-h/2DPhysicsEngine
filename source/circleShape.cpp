@@ -30,3 +30,5 @@ bool circleShape::containsPoint(const Vec2& point) {
     }
     return false;
 }
+
+double circleShape::getRadius() { return radius; }
