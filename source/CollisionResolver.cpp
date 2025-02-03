@@ -243,7 +243,7 @@ void CollisionResolver::resolveMTV(Collision* collision) {
 }
 
 void CollisionResolver::checkCollisions(Application* app) {
-    std::vector<Collision> collisions = narrowPhaseCheck(app->m_objects);
+    std::vector<Collision> collisions = broadPhaseCheck(app->m_objects);
 
     for (int i = 0; i < collisions.size(); ++i) {
         Vec2 mtv = detectCollision(collisions[i].A->shape, collisions[i].B->shape);
@@ -272,7 +272,7 @@ void CollisionResolver::checkCollisions(Application* app) {
     }
 }
 
-std::vector<Collision> CollisionResolver::narrowPhaseCheck(std::vector<Object*> objects) {
+std::vector<Collision> CollisionResolver::broadPhaseCheck(std::vector<Object*> objects) {
     std::vector<Collision> collisions;
     std::vector<double> radii;  // plural radius
     for (int i = 0; i < objects.size(); ++i) {
@@ -284,7 +284,7 @@ std::vector<Collision> CollisionResolver::narrowPhaseCheck(std::vector<Object*> 
         Vec2 posA = objects[i]->shape->rigidbody->pos;
         for (int j = i + 1; j < objects.size(); ++j) {
             Vec2 posB = objects[j]->shape->rigidbody->pos;
-            if(narrowPhaseDetection(posA, posB, radii[i], radii[j])){
+            if(broadPhaseDetection(posA, posB, radii[i], radii[j])){
                 collisions.push_back(Collision(objects[i], objects[j], -1));
             }
         }
@@ -294,7 +294,7 @@ std::vector<Collision> CollisionResolver::narrowPhaseCheck(std::vector<Object*> 
 }
 
 // we stay in squared value to avoid square root overhead
-bool CollisionResolver::narrowPhaseDetection(const Vec2 posA, const Vec2 posB,
+bool CollisionResolver::broadPhaseDetection(const Vec2 posA, const Vec2 posB,
                                              const double radiusA, const double radiusB) {
     Vec2 AtoB = posB - posA;
     double distSq = AtoB.dot(AtoB);

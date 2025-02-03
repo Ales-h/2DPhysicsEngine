@@ -20,9 +20,9 @@ class CollisionResolver {
     void renderCollisionPoints(Renderer* renderer);
 
    private:
-    std::vector<Collision> narrowPhaseCheck(std::vector<Object*> objects);
+    std::vector<Collision> broadPhaseCheck(std::vector<Object*> objects);
     // radius is for rectangles the longer side of the rect
-    bool narrowPhaseDetection(const Vec2 posA, const Vec2 posB, const double radiusA,
+    bool broadPhaseDetection(const Vec2 posA, const Vec2 posB, const double radiusA,
                          const double radiusB);
     Vec2 detectCollision(const circleShape* circle, const rectangleShape* rect);
     Vec2 detectCollision(const rectangleShape* rect, const circleShape* circle);

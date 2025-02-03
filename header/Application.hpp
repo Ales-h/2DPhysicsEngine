@@ -29,7 +29,7 @@ enum AppFlags_ {
 
 class Application {
    public:
-    Application(int _fps = 60);
+    Application(int _fps = 30);
     ~Application();
     void addObject(Object* object);
 
