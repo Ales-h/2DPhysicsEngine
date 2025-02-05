@@ -15,7 +15,7 @@ void renderToolbar(Application* app, bool& isSimRunning);
 void renderObjectWindow(Application* app, const int objectIdx, bool &open);
 void renderObjectSettingsButton(std::vector<int>& objectWinIndices, int selected,
                                 Vec2 pos);
-void renderMainMenuBar(bool& isRunning, bool& showSettings);
+void renderMainMenuBar(Application* app, bool& isRunning, bool& showSettings);
 }  // namespace UI
 
 #endif

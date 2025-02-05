@@ -200,7 +200,7 @@ void Application::run() {
         }
         bool ifChanged = isSimulationRunning;
         UI::renderToolbar(this, isSimulationRunning);
-        UI::renderMainMenuBar(isRunning, showSimSettings);
+        UI::renderMainMenuBar(this, isRunning, showSimSettings);
         if (ifChanged != isSimulationRunning) {
             start = SDL_GetPerformanceCounter();
         }

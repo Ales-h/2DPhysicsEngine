@@ -64,7 +64,7 @@ void renderSceneSelectWindow(Application* app,
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2((float)window_width, (float)window_height));
     ImGui::Begin("Select a Scene", NULL, window_flags);
-    ImGui::BeginChild("Selector", ImVec2((float)window_width / 2, (float)window_height),
+    ImGui::BeginChild("Selector", ImVec2((float)window_width * 1./3, (float)window_height),
                       window_flags);
     static int selected = -1;
     int previous_selected = selected;
@@ -92,7 +92,7 @@ void renderSceneSelectWindow(Application* app,
     }
 
     ImGui::SameLine();  // Position the second child window next to the first
-    ImGui::BeginChild("Preview", ImVec2((float)window_width / 2, (float)window_height),
+    ImGui::BeginChild("Preview", ImVec2((float)window_width * 2./3, (float)window_height),
                       flagsToolbar);
     if (selected != -1) {
         ImGui::SetWindowFontScale(1.5f);
@@ -100,6 +100,7 @@ void renderSceneSelectWindow(Application* app,
         ImGui::SetWindowFontScale(1.f);
 
         // PREVIEW IMAGE
+        ImGui::SetCursorPosX(window_width * 1./12);
         ImGui::Image((ImTextureID)textureScenePreview,
                      ImVec2((float)window_width / 2., (float)window_height / 2.));
 
@@ -152,6 +153,17 @@ void renderSceneSelectWindow(Application* app,
     if (ImGui::Button("Select", ImVec2(100, 50))) {
         app->loadScene(scenes[selected]);
     }
+    ImGui::SetCursorPosX(((float)window_width) / 2. * 1.1 - 120);
+    ImGui::SetCursorPosY((float)window_height - 100);
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{1, 52./255, 52./255, 0.5});
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{1, 0.3, 0.3, 1});
+    if (ImGui::Button("Delete", ImVec2(100, 50))) {
+        SceneManager::eraseFile(scenes[selected]->name);
+        reloadScenes = true;
+        selected = -1;
+    }
+    ImGui::PopStyleColor();
+    ImGui::PopStyleColor();
     ImGui::EndChild();
 
     ImGui::End();
@@ -231,18 +243,25 @@ void renderToolbar(Application* app, bool& isSimRunning) {
     ImGui::End();
 }
 
-void renderMainMenuBar(bool& isRunning, bool& showSettings) {
+void renderMainMenuBar(Application* app, bool& isRunning, bool& showSettings) {
+    static bool saveAsWin = false;
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("Select Scene")) {
+            if (ImGui::MenuItem("Select a Scene")) {
                 // TODO
             }
+            if (ImGui::MenuItem("Save")) {
+                SceneManager::eraseFile(app->m_scene->name);
+                SceneManager::saveSceneToFile(app);
+            }
+            if (ImGui::MenuItem("Save as")) {
+                saveAsWin = true;
+            }
+            ImGui::Separator();
             if (ImGui::MenuItem("Settings")) {
                 showSettings = true;
             }
-            if (ImGui::MenuItem("Save")) {
-                // Handle "Save" action
-            }
+            ImGui::Separator();
             if (ImGui::MenuItem("Exit")) {
                 isRunning = false;
             }
@@ -256,13 +275,39 @@ void renderMainMenuBar(bool& isRunning, bool& showSettings) {
 
         ImGui::EndMainMenuBar();
     }
+
+    if (saveAsWin) {
+        ImGui::OpenPopup("Save As");
+    }
+    if (ImGui::BeginPopupModal("Save As", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        static char buff[25];
+
+        ImGui::Text("Save As: ");
+        ImGui::SameLine();
+        ImGui::InputText("##filename", buff, sizeof(buff));
+
+        if (ImGui::Button("Save")) {
+            // Perform saving logic
+            app->m_scene->name = buff;
+            SceneManager::saveSceneToFile(app);
+            ImGui::CloseCurrentPopup();
+            saveAsWin = false;  // Close the popup
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel")) {
+            ImGui::CloseCurrentPopup();
+            saveAsWin = false;
+        }
+
+        ImGui::EndPopup();
+    }
 }
 
 void renderSettingWindow(Application* app, bool& open) {
     ImGui::Begin("Settings", &open);
 
     // GRAVITY CHECKBOX
-     bool gravity = app->appFlags & AppFlags_Gravity;
+    bool gravity = app->appFlags & AppFlags_Gravity;
     bool gravityChanged = gravity;
     ImGui::Checkbox("gravity", &gravity);
     if (gravity != gravityChanged) {
@@ -361,7 +406,7 @@ void renderObjectWindow(Application* app, const int objectIdx, bool& open) {
 
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{1, 0, 0, 1});
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{1, 0.3, 0.3, 1});
-    if(ImGui::Button("Remove", ImVec2{ImGui::GetContentRegionAvail().x - 20, 30})){
+    if (ImGui::Button("Remove", ImVec2{ImGui::GetContentRegionAvail().x - 20, 30})) {
         open = false;
         app->removeObject(app->m_objects[objectIdx]);
     }
