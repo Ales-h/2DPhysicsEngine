@@ -16,7 +16,7 @@ constexpr SDL_Color sdlColors[SIZE] = {
     SDL_Color{68, 200, 252},     // Blue
     SDL_Color{183, 124, 255},  // Purple
     SDL_Color{255, 234, 101},  // Yellow
-    SDL_Color{255, 0, 0}       // Red
+    SDL_Color{255, 52, 52}       // Red
 };
 
 constexpr const char* colorNames[SIZE] = {

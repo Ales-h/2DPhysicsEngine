@@ -32,6 +32,7 @@ class Application {
     Application(int _fps = 30);
     ~Application();
     void addObject(Object* object);
+    void removeObject(Object* object);
 
     void render();
     SDL_Texture* renderScenePreview(SceneManager::Scene* scene);

@@ -68,6 +68,13 @@ void Application::addObject(Object* object) {
     object->idx = m_objects.size() - 1;
 }
 
+void Application::removeObject(Object* object) {
+    // swap with last element and resize
+    m_objects[object->idx] = m_objects.back();
+    m_objects[object->idx]->idx = object->idx;
+    m_objects.resize(m_objects.size() - 1);
+}
+
 void Application::loadScene(SceneManager::Scene* scene) {
     m_scene = scene;
     m_objects.reserve(scene->objects.size());

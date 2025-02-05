@@ -235,6 +235,7 @@ void renderMainMenuBar(bool& isRunning, bool& showSettings) {
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Select Scene")) {
+                // TODO
             }
             if (ImGui::MenuItem("Settings")) {
                 showSettings = true;
@@ -357,6 +358,16 @@ void renderObjectWindow(Application* app, const int objectIdx, bool& open) {
     char buf[25];
     snprintf(buf, sizeof(buf), "Object %d", objectIdx);
     ImGui::Begin(buf, &open);
+
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{1, 0, 0, 1});
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{1, 0.3, 0.3, 1});
+    if(ImGui::Button("Remove", ImVec2{ImGui::GetContentRegionAvail().x - 20, 30})){
+        open = false;
+        app->removeObject(app->m_objects[objectIdx]);
+    }
+    ImGui::PopStyleColor();
+    ImGui::PopStyleColor();
+
     ImGui::Text("Object %d Data", objectIdx);
 
     ImGui::Combo("Color", (int*)&ob->color, colorNames, IM_ARRAYSIZE(colorNames));
