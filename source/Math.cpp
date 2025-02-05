@@ -20,7 +20,7 @@ bool Math::closeEnough(double& a, double&b){
     return std::abs(a - b) < smallNumber;
 }
 
-bool Math::closeEnough(Vec2& a, Vec2&b){
+bool Math::closeEnough(Vec2& a, Vec2& b){
     return closeEnough(a.x, b.x) && closeEnough(a.y, b.y);
 }
 

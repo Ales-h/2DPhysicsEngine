@@ -48,11 +48,15 @@ class CollisionResolver {
                                                   const std::vector<Vec2>& verticesB);
 
     void resolveCollision(Collision* collision);
-
+    void applyFriction(Collision* collision, std::array<double, 2>& jArray);
     void resolveMTV(Collision* collision);
 
    public:
+    // needs to be floats for ImGui SlideFloat
     float _e;  // součinitel restituce
+    float staticFriction;
+    float dynamicFriction;
+
    private:
     std::vector<Collision> cpsToRender;
 };

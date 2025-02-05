@@ -10,7 +10,11 @@
 #include "../header/Math.hpp"
 #include "../header/rectangleShape.hpp"
 
-CollisionResolver::CollisionResolver() { _e = 0.3; }
+CollisionResolver::CollisionResolver() {
+    _e = 0.3;
+    staticFriction = 0.6;
+    dynamicFriction = 0.5;
+}
 
 CollisionResolver::~CollisionResolver() {}
 
@@ -132,7 +136,8 @@ void CollisionResolver::resolveCollision(Collision* collision) {
     Object* objectA = collision->A;
     Object* objectB = collision->B;
     std::vector<Vec2> cps = collision->contacts;
-    std::vector<Vec2> impulses;
+    std::array<Vec2, 2> impulses;
+    std::array<double, 2> jArray;
     Rigidbody* rbA = objectA->shape->rigidbody;
     Rigidbody* rbB = objectB->shape->rigidbody;
     const double e = _e;
@@ -172,10 +177,11 @@ void CollisionResolver::resolveCollision(Collision* collision) {
 
         j /= inverseMassSum + (raNdotProd * raNdotProd) * objectA->inverseInertia() +
              (rbNdotProd * rbNdotProd) * objectB->inverseInertia();
-        // j /= static_cast<double>(cps.size());
+        j /= (double)cps.size();
 
         Vec2 impulse = normal * j;
-        impulses.push_back(impulse);
+        jArray[i] = j;
+        impulses[i] = impulse;
     }
 
     for (int i = 0; i < cps.size(); ++i) {
@@ -203,8 +209,84 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         // std::cout << "vel" << rbB->v << "\n";
         //}
     }
+
+    applyFriction(collision, jArray);
     //    rbA->checkRestingPosition();
     //    rbB->checkRestingPosition();
+}
+
+void CollisionResolver::applyFriction(Collision* collision,
+                                      std::array<double, 2>& jArray) {
+    Vec2 mtv = collision->mtv;
+    Object* objectA = collision->A;
+    Object* objectB = collision->B;
+    std::vector<Vec2> cps = collision->contacts;
+    Rigidbody* rbA = objectA->shape->rigidbody;
+    Rigidbody* rbB = objectB->shape->rigidbody;
+    Vec2 normal = mtv / mtv.magnitude();
+    std::array<Vec2, 2> frictionImpulseArray;
+
+    Vec2 raArray[2];
+    Vec2 rbArray[2];
+    for (int i = 0; i < cps.size(); i++) {
+        Vec2 ra = cps[i] - rbA->pos;
+        Vec2 rb = cps[i] - rbB->pos;
+
+        raArray[i] = ra;
+        rbArray[i] = rb;
+
+        Vec2 raNormal = ra.normal();
+        Vec2 rbNormal = rb.normal();
+
+        Vec2 angularLinearVelocityA = raNormal * rbA->omega;
+        Vec2 angularLinearVelocityB = rbNormal * rbB->omega;
+
+        Vec2 relativeVelocity =
+            (rbB->v + angularLinearVelocityB) - (rbA->v + angularLinearVelocityA);
+
+        Vec2 tangent = relativeVelocity - normal * relativeVelocity.dot(normal);
+
+        Vec2 zero = Vec2::zero();
+        if (Math::closeEnough(tangent, zero)){
+            continue;
+        } else {
+            tangent = tangent.normalize();
+        }
+
+        double raNdotProd = raNormal.dot(tangent);
+        double rbNdotProd = rbNormal.dot(tangent);
+
+
+
+
+        double jt = -relativeVelocity.dot(tangent);
+        double inverseMassSum = (1 / rbA->m) + (1 / rbB->m);
+        jt /= inverseMassSum + (raNdotProd * raNdotProd) * objectA->inverseInertia() +
+             (rbNdotProd * rbNdotProd) * objectB->inverseInertia();
+        jt /= (double)cps.size();
+
+        Vec2 frictionImpulse;
+        double j = jArray[i];
+
+        if (std::abs(jt) <= j * staticFriction) {
+            frictionImpulse = tangent * jt;
+        } else {
+            frictionImpulse = tangent * -j * dynamicFriction;
+        }
+
+        frictionImpulseArray[i] = frictionImpulse;
+    }
+
+    for (int i = 0; i < cps.size(); i++) {
+        Vec2 frictionImpulse = frictionImpulseArray[i];
+        Vec2 ra = raArray[i];
+        Vec2 rb = rbArray[i];
+
+        rbA->v += -frictionImpulse/ rbA->m;
+        rbA->omega += -ra.cross(frictionImpulse) * objectA->inverseInertia();
+        rbB->v += frictionImpulse / rbB->m;
+        rbB->omega += (rb.cross(frictionImpulse) * objectB->inverseInertia());
+    }
 }
 
 // TODO Refactor
@@ -247,7 +329,7 @@ void CollisionResolver::checkCollisions(Application* app) {
 
     for (int i = 0; i < collisions.size(); ++i) {
         Vec2 mtv = detectCollision(collisions[i].A->shape, collisions[i].B->shape);
-        if(mtv.x == 0 && mtv.y == 0){
+        if (mtv.x == 0 && mtv.y == 0) {
             collisions.erase(collisions.begin() + i);
             i--;
             continue;
@@ -284,7 +366,7 @@ std::vector<Collision> CollisionResolver::broadPhaseCheck(std::vector<Object*> o
         Vec2 posA = objects[i]->shape->rigidbody->pos;
         for (int j = i + 1; j < objects.size(); ++j) {
             Vec2 posB = objects[j]->shape->rigidbody->pos;
-            if(broadPhaseDetection(posA, posB, radii[i], radii[j])){
+            if (broadPhaseDetection(posA, posB, radii[i], radii[j])) {
                 collisions.push_back(Collision(objects[i], objects[j], -1));
             }
         }
@@ -295,11 +377,11 @@ std::vector<Collision> CollisionResolver::broadPhaseCheck(std::vector<Object*> o
 
 // we stay in squared value to avoid square root overhead
 bool CollisionResolver::broadPhaseDetection(const Vec2 posA, const Vec2 posB,
-                                             const double radiusA, const double radiusB) {
+                                            const double radiusA, const double radiusB) {
     Vec2 AtoB = posB - posA;
     double distSq = AtoB.dot(AtoB);
 
-    if (distSq < radiusA + radiusB) {
+    if (distSq < ((radiusA + radiusB) * (radiusA + radiusB))) {
         return true;
     } else {
         return false;

@@ -2,17 +2,13 @@
 
 #include <SDL_pixels.h>
 #include <SDL_render.h>
-#include <SDL_ttf.h>
+#include <iostream>
 
 #include <cmath>
 
 SDL_Color getColor(int c) { return sdlColors[c]; }
 
-Renderer::Renderer(SDL_Renderer* renderer) {
-    sdl_renderer = renderer;
-
-}
-
+Renderer::Renderer(SDL_Renderer* renderer) { sdl_renderer = renderer; }
 
 // multiply by 100, make it a int,  1 unit in physics engine = 100 pixels
 int Renderer::windowX(const double& x) { return static_cast<int>(x * 100); }
