@@ -64,7 +64,8 @@ void renderSceneSelectWindow(Application* app,
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2((float)window_width, (float)window_height));
     ImGui::Begin("Select a Scene", NULL, window_flags);
-    ImGui::BeginChild("Selector", ImVec2((float)window_width * 1./3, (float)window_height),
+    ImGui::BeginChild("Selector",
+                      ImVec2((float)window_width * 1. / 3, (float)window_height),
                       window_flags);
     static int selected = -1;
     int previous_selected = selected;
@@ -92,7 +93,8 @@ void renderSceneSelectWindow(Application* app,
     }
 
     ImGui::SameLine();  // Position the second child window next to the first
-    ImGui::BeginChild("Preview", ImVec2((float)window_width * 2./3, (float)window_height),
+    ImGui::BeginChild("Preview",
+                      ImVec2((float)window_width * 2. / 3, (float)window_height),
                       flagsToolbar);
     if (selected != -1) {
         ImGui::SetWindowFontScale(1.5f);
@@ -100,7 +102,7 @@ void renderSceneSelectWindow(Application* app,
         ImGui::SetWindowFontScale(1.f);
 
         // PREVIEW IMAGE
-        ImGui::SetCursorPosX(window_width * 1./12);
+        ImGui::SetCursorPosX(window_width * 1. / 12);
         ImGui::Image((ImTextureID)textureScenePreview,
                      ImVec2((float)window_width / 2., (float)window_height / 2.));
 
@@ -155,7 +157,7 @@ void renderSceneSelectWindow(Application* app,
     }
     ImGui::SetCursorPosX(((float)window_width) / 2. * 1.1 - 120);
     ImGui::SetCursorPosY((float)window_height - 100);
-    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{1, 52./255, 52./255, 0.5});
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{1, 52. / 255, 52. / 255, 0.5});
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{1, 0.3, 0.3, 1});
     if (ImGui::Button("Delete", ImVec2(100, 50))) {
         SceneManager::eraseFile(scenes[selected]->name);
@@ -201,7 +203,6 @@ void renderToolbar(Application* app, bool& isSimRunning) {
     }
     if (ImGui::ImageButton("reset", (ImTextureID)resetTexture, ImVec2(20, 20))) {
         isSimRunning = false;
-        app->clear();
         app->loadScene(app->m_scene);
     }
 
@@ -243,7 +244,8 @@ void renderToolbar(Application* app, bool& isSimRunning) {
     ImGui::End();
 }
 
-void renderMainMenuBar(Application* app, bool& isRunning, bool& showSettings) {
+void renderMainMenuBar(Application* app, std::vector<SceneManager::Scene*> scenes,
+                       bool& isRunning, bool& showSettings) {
     static bool saveAsWin = false;
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("File")) {
@@ -251,8 +253,16 @@ void renderMainMenuBar(Application* app, bool& isRunning, bool& showSettings) {
                 // TODO
             }
             if (ImGui::MenuItem("Save")) {
+                std::string name = app->m_scene->name;
                 SceneManager::eraseFile(app->m_scene->name);
                 SceneManager::saveSceneToFile(app);
+                scenes = SceneManager::loadScenes();
+                for (auto scene : scenes) {
+                    if (scene->name == name) {
+                        app->m_scene = scene;
+                        break;
+                    }
+                }
             }
             if (ImGui::MenuItem("Save as")) {
                 saveAsWin = true;
@@ -290,20 +300,27 @@ void renderMainMenuBar(Application* app, bool& isRunning, bool& showSettings) {
             // Perform saving logic
             app->m_scene->name = buff;
             SceneManager::saveSceneToFile(app);
-            ImGui::CloseCurrentPopup();
-            saveAsWin = false;  // Close the popup
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Cancel")) {
-            ImGui::CloseCurrentPopup();
-            saveAsWin = false;
-        }
+            scenes = SceneManager::loadScenes();
+            for (auto scene : scenes) {
+                if (scene->name == buff) {
+                    app->m_scene = scene;
+                    break;
+                }
+                ImGui::CloseCurrentPopup();
+                saveAsWin = false;  // Close the popup
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel")) {
+                ImGui::CloseCurrentPopup();
+                saveAsWin = false;
+            }
 
-        ImGui::EndPopup();
+            ImGui::EndPopup();
+        }
     }
 }
 
-void renderSettingWindow(Application* app, bool& open) {
+void renderSettingsWindow(Application* app, bool& open) {
     ImGui::Begin("Settings", &open);
 
     // GRAVITY CHECKBOX
@@ -334,17 +351,20 @@ void renderSettingWindow(Application* app, bool& open) {
     ImGui::Text("(?)");
     ImGui::SetItemTooltip(
         "Gravitacni zrychleni je hodnota, ktera telesa urychluje na ose y");
-    ImGui::InputDouble("###a31553", gravA, 0.01f, 1.0f, "%.8f");
+    ImGui::InputDouble("###gravityacceleration", gravA, 0.01f, 1.0f, "%.8f");
     if (!gravity) {
         ImGui::EndDisabled();
     }
     ImGui::Text("Elasticity");
-    ImGui::SliderFloat("###b3525325", &app->m_cResolver->_e, 0.0f, 1.0f, "%.3f");
+    ImGui::SliderFloat("###elasticity", &app->m_cResolver->_e, 0.0f, 1.0f, "%.3f");
 
-    // TODO friction
-    float x = 1;
-    ImGui::Text("Friction");
-    ImGui::SliderFloat("###c352532", &x, 0.0f, 1.0f, "%.3f");
+    ImGui::Text("Static Friction");
+    ImGui::SliderFloat("###staticfriction", &app->m_cResolver->staticFriction, 0.0f, 1.0f,
+                       "%.3f");
+
+    ImGui::Text("Dynamic Friction");
+    ImGui::SliderFloat("###dynamicfriction", &app->m_cResolver->dynamicFriction, 0.0f,
+                       app->m_cResolver->staticFriction, "%.3f");
 
     static bool ShowCP = app->appFlags & AppFlags_ShowCollisionPoints;
     bool ShowCPChanged = ShowCP;

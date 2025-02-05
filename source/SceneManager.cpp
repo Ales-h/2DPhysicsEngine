@@ -38,6 +38,8 @@ void clearScenes(std::vector<Scene*> scenes) {
     scenes.clear();
 }
 
+
+
 void eraseFile(std::string name) {
     std::string path = SCENES_PATH + name + ".json";
     if (std::filesystem::exists(path)) {

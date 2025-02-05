@@ -76,6 +76,7 @@ void Application::removeObject(Object* object) {
 }
 
 void Application::loadScene(SceneManager::Scene* scene) {
+    clear();
     m_scene = scene;
     m_objects.reserve(scene->objects.size());
     for (auto ob : scene->objects) {
@@ -200,12 +201,12 @@ void Application::run() {
         }
         bool ifChanged = isSimulationRunning;
         UI::renderToolbar(this, isSimulationRunning);
-        UI::renderMainMenuBar(this, isRunning, showSimSettings);
+        UI::renderMainMenuBar(this, scenes, isRunning, showSimSettings);
         if (ifChanged != isSimulationRunning) {
             start = SDL_GetPerformanceCounter();
         }
         if (showSimSettings) {
-            UI::renderSettingWindow(this, showSimSettings);
+            UI::renderSettingsWindow(this, showSimSettings);
         }
 
         if (m_scene == nullptr) {
