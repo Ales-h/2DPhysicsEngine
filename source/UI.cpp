@@ -250,7 +250,8 @@ void renderMainMenuBar(Application* app, std::vector<SceneManager::Scene*> scene
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Select a Scene")) {
-                // TODO
+                app->clear();
+                app->m_scene = nullptr;
             }
             if (ImGui::MenuItem("Save")) {
                 std::string name = app->m_scene->name;
@@ -432,6 +433,40 @@ void renderObjectWindow(Application* app, const int objectIdx, bool& open) {
     }
     ImGui::PopStyleColor();
     ImGui::PopStyleColor();
+
+    ImGui::Text("Shape");
+    const char* shapes[] = {"Circle", "Rectangle"};
+    int currentShape = (shape->type == 'c') ? 0 : 1;
+    ImGui::Combo("Shape", &currentShape, shapes, IM_ARRAYSIZE(shapes));
+    if (currentShape == 0 && shape->type != 'c') {
+        auto rect = dynamic_cast<rectangleShape*>(shape);
+        Shape* newShape = new circleShape(rb, std::max(rect->width, rect->height));
+        shape->rigidbody = nullptr;  // we dont want to free the rb
+        delete shape;
+        ob->shape = newShape;
+        shape = newShape;
+    } else if (currentShape == 1 && shape->type != 'r') {
+        auto circle = dynamic_cast<circleShape*>(shape);
+        Shape* newShape = new rectangleShape(rb, circle->radius*2, circle->radius*2);
+        shape->rigidbody = nullptr;  // we dont want to free the rb
+        delete shape;
+        ob->shape = newShape;
+        shape = newShape;
+    }
+    if (shape->type == 'c') {
+        auto circle = dynamic_cast<circleShape*>(shape);
+        ImGui::Text("Radius: ");
+        ImGui::SameLine();
+        ImGui::InputDouble("###radius", &circle->radius);
+    } else if (shape->type == 'r') {
+        auto rect = dynamic_cast<rectangleShape*>(shape);
+        ImGui::Text("Width: ");
+        ImGui::SameLine();
+        ImGui::InputDouble("###width", &rect->width);
+        ImGui::Text("Height: ");
+        ImGui::SameLine();
+        ImGui::InputDouble("###height", &rect->height);
+    }
 
     ImGui::Text("Object %d Data", objectIdx);
 

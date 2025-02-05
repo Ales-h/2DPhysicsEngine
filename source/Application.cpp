@@ -121,6 +121,10 @@ SDL_Texture* Application::renderScenePreview(SceneManager::Scene* scene) {
     SDL_RenderClear(m_renderer->sdl_renderer);
     for (int i = 0; i < scene->objects.size(); ++i) {
         scene->objects[i]->render(m_renderer);
+        if (scene->objects[i]->type != Object::FIXED &&
+            scene->objects[i]->shape->rigidbody->v != Vec2::zero()) {
+            scene->objects[i]->shape->rigidbody->renderVelocityVector(m_renderer);
+        }
     }
     SDL_SetRenderTarget(m_renderer->sdl_renderer, nullptr);
     return texture;
