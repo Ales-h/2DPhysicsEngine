@@ -12,8 +12,8 @@
 
 CollisionResolver::CollisionResolver() {
     _e = 0.3;
-    staticFriction = 0.6;
-    dynamicFriction = 0.5;
+    staticFriction = 0.5;
+    dynamicFriction = 0.2;
 }
 
 CollisionResolver::~CollisionResolver() {}
@@ -192,22 +192,23 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         rbA->omega += -ra.cross(impulse) * objectA->inverseInertia();
         rbB->v += impulse / rbB->m;
         rbB->omega += (rb.cross(impulse) * objectB->inverseInertia());
-       // if (objectA->color == Color::BLUE){
-       //     std::cout << "IMPULSE:" << impulse << "\n";
-       //     std::cout << "InverseInertia" << objectA->inverseInertia() << "\n";
-       //     std::cout << "omega change:"
-       //               << (rb.cross(impulse) * objectA->inverseInertia()) << "\n";
-       //     std::cout << "omega " << rbA->omega * (180. / M_PI) << "\n";
-       //     std::cout << "theta " << rbA->theta * (180. / M_PI) << "\n";
-       //     std::cout << "vel" << rbA->v << "\n";
+        // if (objectA->color == Color::BLUE){
+        //std::cout << "vel before A " << rbA->v << "\n";
+        //std::cout << "vel before B " << rbB->v << "\n";
+        //std::cout << "IMPULSE:" << impulse << "\n";
+        //     std::cout << "InverseInertia" << objectA->inverseInertia() << "\n";
+        //     std::cout << "omega change:"
+        //               << (rb.cross(impulse) * objectA->inverseInertia()) << "\n";
+        //     std::cout << "omega " << rbA->omega * (180. / M_PI) << "\n";
+        //     std::cout << "theta " << rbA->theta * (180. / M_PI) << "\n";
+        //std::cout << "velA " << rbA->v << "\n";
 
-       //     std::cout << "vel before" << rbB->v << "\n";
-       //     std::cout << "omega change:"
-       //               << (rb.cross(impulse) * objectB->inverseInertia()) << "\n";
-       //     std::cout << "omega " << rbB->omega * (180. / M_PI) << "\n";
-       //     std::cout << "theta " << rbB->theta * (180. / M_PI) << "\n";
-       //     std::cout << "vel" << rbB->v << "\n";
-       // }
+        //     std::cout << "omega change:"
+        //               << (rb.cross(impulse) * objectB->inverseInertia()) << "\n";
+        //     std::cout << "omega " << rbB->omega * (180. / M_PI) << "\n";
+        //     std::cout << "theta " << rbB->theta * (180. / M_PI) << "\n";
+        //std::cout << "vel " << rbB->v << "\n";
+        // }
     }
 
     applyFriction(collision, jArray);
@@ -256,19 +257,28 @@ void CollisionResolver::applyFriction(Collision* collision,
         double raNdotProd = raNormal.dot(tangent);
         double rbNdotProd = rbNormal.dot(tangent);
 
-        double jt = -relativeVelocity.dot(tangent);
+        double jt = relativeVelocity.dot(tangent);
         double inverseMassSum = (1 / rbA->m) + (1 / rbB->m);
-        jt /= inverseMassSum + (raNdotProd * raNdotProd) * objectA->inverseInertia() +
-              (rbNdotProd * rbNdotProd) * objectB->inverseInertia();
+        jt = -jt /
+             (inverseMassSum + (raNdotProd * raNdotProd) * objectA->inverseInertia() +
+              (rbNdotProd * rbNdotProd) * objectB->inverseInertia());
         jt /= (double)cps.size();
 
         Vec2 frictionImpulse;
         double j = jArray[i];
 
         if (std::abs(jt) <= j * staticFriction) {
-            frictionImpulse = tangent * jt;
+            std::cout << "static" << '\n';
+            frictionImpulse = -tangent * jt;
         } else {
             frictionImpulse = tangent * -j * dynamicFriction;
+            // std::cout << "dynamic" << '\n';
+            // std::cout << dynamicFriction << " * " << tangent << " * " << -j << '\n';
+            // std::cout << tangent * -j * dynamicFriction << '\n';
+            // std::cout << normal << " * " << j <<  '\n';
+            // std::cout << normal * j << '\n';
+            // std::cout << "tangent " << tangent << '\n';
+            // std::cout << "normal " << normal << '\n';
         }
 
         frictionImpulseArray[i] = frictionImpulse;

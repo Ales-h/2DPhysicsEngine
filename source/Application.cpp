@@ -2,6 +2,7 @@
 
 #include <SDL_render.h>
 #include <SDL_timer.h>
+#include <SDL_video.h>
 
 #include <iostream>
 #include <stdexcept>
@@ -31,7 +32,7 @@ Application::Application(int _fps) {
         SDL_Quit();
         std::exit(-1);
     }
-
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     SDL_Renderer* renderer = SDL_CreateRenderer(
         window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!m_renderer) {

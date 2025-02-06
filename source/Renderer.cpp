@@ -2,9 +2,9 @@
 
 #include <SDL_pixels.h>
 #include <SDL_render.h>
-#include <iostream>
 
 #include <cmath>
+#include <iostream>
 
 SDL_Color getColor(int c) { return sdlColors[c]; }
 
@@ -50,7 +50,7 @@ void Renderer::drawRectOutline(std::array<Vec2, 4>& vertices, int c) {
     SDL_RenderDrawLines(sdl_renderer, &sdlPoints[0], 5);
 }
 
-void Renderer::drawCircle(Vec2 pos, double radius, int c) {
+void Renderer::drawCircle(Vec2 pos, double radius, double theta, int c) {
     SDL_Color color = getColor(c);
     SDL_SetRenderDrawColor(sdl_renderer, color.r, color.g, color.b, color.a);
 
@@ -78,6 +78,10 @@ void Renderer::drawCircle(Vec2 pos, double radius, int c) {
         }
         x++;
     }
+    double r = windowLength(radius);
+    SDL_SetRenderDrawColor(sdl_renderer, 0, 0, 0, 125);
+    SDL_RenderDrawLine(sdl_renderer, centerX, centerY, centerX + std::sin(theta) * r,
+                       centerY + std::cos(theta) * r);
 }
 void Renderer::drawCircleOutline(Vec2 pos, double radius, int c) {
     SDL_Color color = getColor(c);

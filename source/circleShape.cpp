@@ -5,7 +5,7 @@ circleShape::circleShape(Rigidbody* rb, double _radius) : Shape(rb, 'c') {
 }
 
 void circleShape::render(Renderer* renderer, int color) {
-    renderer->drawCircle(rigidbody->pos, radius, color);
+    renderer->drawCircle(rigidbody->pos, radius, rigidbody->theta, color);
 }
 
 void circleShape::renderOutline(Renderer* renderer, int color) {

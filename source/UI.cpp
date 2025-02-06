@@ -28,7 +28,7 @@ static SDL_Texture* resumeTexture;
 static SDL_Texture* resetTexture;
 static SDL_Texture* editTexture;
 static SDL_Texture* settingTexture;
-static SDL_Texture* dragTexture;
+static SDL_Texture* moveTexture;
 static SDL_Texture* spiralTexture;
 static SDL_Texture* spawnTexture;
 
@@ -38,7 +38,7 @@ void initUI(SDL_Renderer* renderer) {
     resetTexture = loadTexture(renderer, "../assets/icons/reset.png");
     editTexture = loadTexture(renderer, "../assets/icons/edit.png");
     settingTexture = loadTexture(renderer, "../assets/icons/setting.png");
-    dragTexture = loadTexture(renderer, "../assets/icons/drag.png");
+    moveTexture = loadTexture(renderer, "../assets/icons/move.png");
     spiralTexture = loadTexture(renderer, "../assets/icons/magnet.png");
     spawnTexture = loadTexture(renderer, "../assets/icons/spawn.png");
 }
@@ -212,7 +212,7 @@ void renderToolbar(Application* app, bool& isSimRunning) {
     ImGui::PushStyleColor(ImGuiCol_Button,
                           select == 1 ? selectColor : ImVec4(0, 0, 0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
-    if (ImGui::ImageButton("drag", (ImTextureID)dragTexture, ImVec2(20, 20))) {
+    if (ImGui::ImageButton("drag", (ImTextureID)moveTexture, ImVec2(20, 20))) {
         select = 1;
         app->appFlags &= ~AppFlags_SpiralEvent;
         app->appFlags &= ~AppFlags_SpawnObjectsEvent;
@@ -307,17 +307,16 @@ void renderMainMenuBar(Application* app, std::vector<SceneManager::Scene*> scene
                     app->m_scene = scene;
                     break;
                 }
-                ImGui::CloseCurrentPopup();
-                saveAsWin = false;  // Close the popup
             }
-            ImGui::SameLine();
-            if (ImGui::Button("Cancel")) {
-                ImGui::CloseCurrentPopup();
-                saveAsWin = false;
-            }
-
-            ImGui::EndPopup();
+            ImGui::CloseCurrentPopup();
+            saveAsWin = false;  // Close the popup
         }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel")) {
+            ImGui::CloseCurrentPopup();
+            saveAsWin = false;
+        }
+        ImGui::EndPopup();
     }
 }
 
@@ -447,7 +446,7 @@ void renderObjectWindow(Application* app, const int objectIdx, bool& open) {
         shape = newShape;
     } else if (currentShape == 1 && shape->type != 'r') {
         auto circle = dynamic_cast<circleShape*>(shape);
-        Shape* newShape = new rectangleShape(rb, circle->radius*2, circle->radius*2);
+        Shape* newShape = new rectangleShape(rb, circle->radius * 2, circle->radius * 2);
         shape->rigidbody = nullptr;  // we dont want to free the rb
         delete shape;
         ob->shape = newShape;
@@ -479,6 +478,7 @@ void renderObjectWindow(Application* app, const int objectIdx, bool& open) {
     if (obTypeChanged != ob->type) {
         if (ob->type == Object::FIXED) {
             app->m_rbSystem->removeRigidbody(rb);
+            rb->m = INFINITY;
         } else {
             rb->m = 1;
             app->m_rbSystem->addRigidbody(rb);
