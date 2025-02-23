@@ -173,7 +173,7 @@ void CollisionResolver::resolveCollision(Collision* collision) {
         double rbNdotProd = rbNormal.dot(normal);
 
         double j = -(1 + e) * relativeVelocity.dot(normal);
-        double inverseMassSum = (1 / rbA->m) + (1 / rbB->m);
+        double inverseMassSum =  (1 / rbA->m) + (1 / rbB->m);
 
         j /= inverseMassSum + (raNdotProd * raNdotProd) * objectA->inverseInertia() +
              (rbNdotProd * rbNdotProd) * objectB->inverseInertia();

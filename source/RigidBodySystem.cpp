@@ -69,15 +69,38 @@ void RigidbodySystem::step(double dt) {
 
     for (int i = 0; i < s; ++i) {
         Rigidbody* rb = rigidbodies[i];
-        // std::cout << "position: " << rb->getX() << " " << rb->getY() << "\n";
-        // std::cout << "velocity: " << rb->v.x << " " << rb->v.y << "\n";
+        Vec2 v0 = rb->v;
+        Vec2 a0 = rb->f / rb->m;
 
-        rb->a = rb->f / rb->m;
-        rb->v += rb->a * dt;
-        rb->pos += rb->v * dt;
+        double omega0 = rb->omega;
+        double theta0 = rb->theta;
+        double epsilon0 = rb->epsilon;
 
-        rb->omega += rb->epsilon * dt;
-        rb->theta += rb->omega * dt;
+        Vec2 vK1 = a0 * dt;
+        Vec2 posK1 = v0 * dt;
+        double omegaK1 = epsilon0 * dt;
+        double thetaK1 = omega0 * dt;
+
+        Vec2 vK2 = ((rb->f / rb->m) + vK1 * 0.5) * dt;
+        Vec2 posK2 = (v0 + vK1 * 0.5) * dt;
+        double omegaK2 = (epsilon0 + omegaK1 * 0.5) * dt;
+        double thetaK2 = (omega0 + omegaK1 * 0.5) * dt;
+
+        Vec2 vK3 = ((rb->f / rb->m) + vK2 * 0.5) * dt;
+        Vec2 posK3 = (v0 + vK2 * 0.5) * dt;
+        double omegaK3 = (epsilon0 + omegaK2 * 0.5) * dt;
+        double thetaK3 = (omega0 + omegaK2 * 0.5) * dt;
+
+        Vec2 vK4 = ((rb->f / rb->m) + vK3) * dt;
+        Vec2 posK4 = (v0 + vK3) * dt;
+        double omegaK4 = (epsilon0 + omegaK3) * dt;
+        double thetaK4 = (omega0 + omegaK3) * dt;
+
+        rb->v += (vK1 + vK2 * 2 + vK3 * 2 + vK4) / 6.0;
+        rb->pos += (posK1 +  posK2 * 2 + posK3 * 2 + posK4) / 6.0;
+
+        rb->omega += (omegaK1 + 2.0 * omegaK2 + 2.0 * omegaK3 + omegaK4) / 6.0;
+        rb->theta += (thetaK1 + 2.0 * thetaK2 + 2.0 * thetaK3 + thetaK4) / 6.0;
 
         rb->f = {0, 0};
     }
