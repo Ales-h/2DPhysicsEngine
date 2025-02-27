@@ -7,7 +7,7 @@
 #include "Application.hpp"
 #include "SceneManager.hpp"
 
-int main() {
+int main(int argc, char* args[]) {
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         SDL_Log("Failed to initialize SDL: %s", SDL_GetError());

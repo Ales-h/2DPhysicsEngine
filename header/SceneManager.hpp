@@ -14,7 +14,7 @@ struct Scene {
     std::vector<Object*> objects;
 };
 
-constexpr char SCENES_PATH[] = "../scenes/userScenes/";
+static std::filesystem::path SCENES_PATH = std::filesystem::path("../scenes/userScenes/");
 
 std::vector<Scene*> loadScenes();
 void clearScenes(std::vector<Scene*> scenes);               // proper clean up

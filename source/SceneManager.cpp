@@ -41,7 +41,7 @@ void clearScenes(std::vector<Scene*> scenes) {
 
 
 void eraseFile(std::string name) {
-    std::string path = SCENES_PATH + name + ".json";
+    std::string path = SCENES_PATH.string() + name + ".json";
     if (std::filesystem::exists(path)) {
         std::filesystem::remove(path);
         std::cout << "file erased: " << path << '\n';
@@ -54,7 +54,7 @@ void renameFile(std::string oldName, std::string newName) {
     std::string path = "";
     for (const auto& entry : std::filesystem::directory_iterator(SCENES_PATH)) {
         if ((oldName + ".json") == entry.path().filename()) {
-            path = entry.path();
+            path = entry.path().string();
             break;
         }
     }
@@ -79,7 +79,7 @@ void renameFile(std::string oldName, std::string newName) {
     outputFile.close();
 
     // rename the file
-    std::string newPath = SCENES_PATH + newName + ".json";
+    std::string newPath = SCENES_PATH.string() + newName + ".json";
     std::filesystem::rename(path, newPath);
 }
 
@@ -202,7 +202,7 @@ void saveSceneToFile(Application* app) {
         fileName = fileName + std::to_string(i);
     }
     jsonScene["name"] = fileName;  // file name and scene name is the same
-    fileName = SCENES_PATH + fileName + ".json";
+    fileName = SCENES_PATH.string() + fileName + ".json";
     std::cout << "saving to      " << fileName << '\n';
     std::freopen(fileName.c_str(), "w", stdout);
 
