@@ -150,7 +150,7 @@ void renderSceneSelectWindow(Application* app,
         }
         ImGui::SetWindowFontScale(1.f);
     }
-    if(selected == -1){
+    if (selected == -1) {
         ImGui::BeginDisabled();
     }
     ImGui::SetCursorPosX(((float)window_width) / 2. * 1.1);
@@ -169,7 +169,7 @@ void renderSceneSelectWindow(Application* app,
     }
     ImGui::PopStyleColor();
     ImGui::PopStyleColor();
-    if(selected == -1){
+    if (selected == -1) {
         ImGui::EndDisabled();
     }
     ImGui::EndChild();
@@ -250,7 +250,7 @@ void renderToolbar(Application* app, bool& isSimRunning) {
     ImGui::End();
 }
 
-void renderMainMenuBar(Application* app, std::vector<SceneManager::Scene*> scenes,
+void renderMainMenuBar(Application* app, std::vector<SceneManager::Scene*>& scenes,
                        bool& isRunning, bool& showSettings) {
     static bool saveAsWin = false;
     if (ImGui::BeginMainMenuBar()) {
@@ -262,14 +262,16 @@ void renderMainMenuBar(Application* app, std::vector<SceneManager::Scene*> scene
             if (ImGui::MenuItem("Save")) {
                 std::string name = app->m_scene->name;
                 SceneManager::eraseFile(app->m_scene->name);
+                SceneManager::saveSceneToFile(app);
+                SceneManager::clearScenes(scenes);
                 scenes = SceneManager::loadScenes();
+
                 for (auto scene : scenes) {
                     if (scene->name == name) {
                         app->m_scene = scene;
                         break;
                     }
                 }
-                SceneManager::saveSceneToFile(app);
             }
             if (ImGui::MenuItem("Save as")) {
                 saveAsWin = true;
@@ -307,6 +309,7 @@ void renderMainMenuBar(Application* app, std::vector<SceneManager::Scene*> scene
             // Perform saving logic
             app->m_scene->name = buff;
             SceneManager::saveSceneToFile(app);
+            SceneManager::clearScenes(scenes);
             scenes = SceneManager::loadScenes();
             for (auto scene : scenes) {
                 if (scene->name == buff) {
