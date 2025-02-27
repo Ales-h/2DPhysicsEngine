@@ -268,7 +268,6 @@ void CollisionResolver::applyFriction(Collision* collision,
         double j = jArray[i];
 
         if (std::abs(jt) <= j * staticFriction) {
-            std::cout << "static" << '\n';
             frictionImpulse = -tangent * jt;
         } else {
             frictionImpulse = tangent * -j * dynamicFriction;

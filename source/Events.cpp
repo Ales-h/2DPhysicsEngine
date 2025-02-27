@@ -15,6 +15,11 @@ void handleEvents(Application* app, bool& isRunning, int& selected) {
     static SpiralGenerator* spiralGen = nullptr;
 
     while (SDL_PollEvent(&event)) {
+        ImGui_ImplSDL2_ProcessEvent(&event);
+        if (ImGui::GetIO().WantCaptureMouse) {
+            continue;
+        }
+
         switch (event.type) {
             case SDL_QUIT:
                 isRunning = false;
@@ -49,7 +54,6 @@ void handleEvents(Application* app, bool& isRunning, int& selected) {
                 spiralGen = nullptr;
             }
         }
-        ImGui_ImplSDL2_ProcessEvent(&event);
     }  // event loop
 }
 

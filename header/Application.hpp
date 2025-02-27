@@ -5,7 +5,7 @@
 
 #include "CollisionResolver.hpp"
 #include "Object.hpp"
-#include "RigidBodySystem.hpp"
+#include "RigidbodySystem.hpp"
 
 namespace SceneManager {
 struct Scene;

@@ -10,7 +10,6 @@
 #include "Events.hpp"
 #include "GravityGenerator.hpp"
 #include "Object.hpp"
-#include "RigidBodySystem.hpp"
 #include "SceneManager.hpp"
 #include "UI.hpp"
 #include "backends/imgui_impl_sdl2.h"

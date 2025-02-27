@@ -1,4 +1,4 @@
-#include "RigidBodySystem.hpp"
+#include "RigidbodySystem.hpp"
 
 #include <algorithm>
 
