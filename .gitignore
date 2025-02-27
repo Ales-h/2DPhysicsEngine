@@ -3,7 +3,6 @@
 .DS_Store
 /.cache
 .cache
-/scenes/userScenes/*
 !/scenes/userScenes/.gitkeep
 
 error.txt
