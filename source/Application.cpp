@@ -77,6 +77,9 @@ void Application::removeObject(Object* object) {
 
 void Application::loadScene(SceneManager::Scene* scene) {
     clear();
+    if(scene == nullptr){
+        return;
+    }
     m_scene = scene;
     m_objects.reserve(scene->objects.size());
     for (auto ob : scene->objects) {
@@ -178,6 +181,7 @@ void Application::run() {
     ImGui_ImplSDL2_InitForSDLRenderer(m_window, m_renderer->sdl_renderer);
     ImGui_ImplSDLRenderer2_Init(m_renderer->sdl_renderer);
     while (isRunning) {
+        current = SDL_GetPerformanceCounter();
         if (isSimulationRunning) {
             appFlags |= AppFlags_iSSimulationRunning;
         } else {
@@ -221,14 +225,15 @@ void Application::run() {
             // iterating backwards to avoid shifting issues
             for (int i = selectedWinIndices.size() - 1; i >= 0; --i) {
                 bool isOpen = true;
-                UI::renderObjectWindow(this, selectedObjectID,  selectedWinIndices[i], isOpen);
+                UI::renderObjectWindow(this, selectedObjectID, selectedWinIndices[i],
+                                       isOpen);
                 if (!isOpen) {
                     selectedWinIndices.erase(selectedWinIndices.begin() + i);
                 }
             }
         }
         render();  // Simulation Render (SDL)
-        if (selectedObjectID != -1) {
+        if (selectedObjectID != -1 && m_scene != nullptr) {
             Shape* tmp = m_objects[selectedObjectID]->shape;
             m_objects[selectedObjectID]->shape->renderOutline(m_renderer, Color::RED);
             UI::renderObjectSettingsButton(selectedWinIndices, selectedObjectID,

@@ -203,12 +203,15 @@ void saveSceneToFile(Application* app) {
     }
     jsonScene["name"] = fileName;  // file name and scene name is the same
     fileName = SCENES_PATH + fileName + ".json";
-    std::cout << "saving to      " << fileName << '\n';
-    std::freopen(fileName.c_str(), "w", stdout);
-
-    std::cout << jsonScene.dump(4);
-
-    freopen("CON", "w", stdout);  // stdout back to console
+    std::ofstream outFile(fileName);
+    if (outFile.is_open()) {
+        outFile << jsonScene.dump(4);
+        outFile.close();
+        std::cout << "Save completed successfully" << std::endl;
+    } else {
+        std::cerr << "Failed to open file for writing: " << fileName << std::endl;
+    }
+    std::cout << 'a';
 }
 
 }  // namespace SceneManager
