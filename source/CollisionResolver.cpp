@@ -12,8 +12,8 @@
 
 CollisionResolver::CollisionResolver() {
     _e = 0.3;
-    staticFriction = 0.5;
-    dynamicFriction = 0.2;
+    staticFriction = 0.3;
+    dynamicFriction = 0.1;
 }
 
 CollisionResolver::~CollisionResolver() {}

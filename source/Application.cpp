@@ -221,7 +221,7 @@ void Application::run() {
             // iterating backwards to avoid shifting issues
             for (int i = selectedWinIndices.size() - 1; i >= 0; --i) {
                 bool isOpen = true;
-                UI::renderObjectWindow(this, selectedWinIndices[i], isOpen);
+                UI::renderObjectWindow(this, selectedObjectID,  selectedWinIndices[i], isOpen);
                 if (!isOpen) {
                     selectedWinIndices.erase(selectedWinIndices.begin() + i);
                 }

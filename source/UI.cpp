@@ -150,6 +150,9 @@ void renderSceneSelectWindow(Application* app,
         }
         ImGui::SetWindowFontScale(1.f);
     }
+    if(selected == -1){
+        ImGui::BeginDisabled();
+    }
     ImGui::SetCursorPosX(((float)window_width) / 2. * 1.1);
     ImGui::SetCursorPosY((float)window_height - 100);
     if (ImGui::Button("Select", ImVec2(100, 50))) {
@@ -166,6 +169,9 @@ void renderSceneSelectWindow(Application* app,
     }
     ImGui::PopStyleColor();
     ImGui::PopStyleColor();
+    if(selected == -1){
+        ImGui::EndDisabled();
+    }
     ImGui::EndChild();
 
     ImGui::End();
@@ -256,7 +262,6 @@ void renderMainMenuBar(Application* app, std::vector<SceneManager::Scene*> scene
             if (ImGui::MenuItem("Save")) {
                 std::string name = app->m_scene->name;
                 SceneManager::eraseFile(app->m_scene->name);
-                SceneManager::saveSceneToFile(app);
                 scenes = SceneManager::loadScenes();
                 for (auto scene : scenes) {
                     if (scene->name == name) {
@@ -264,6 +269,7 @@ void renderMainMenuBar(Application* app, std::vector<SceneManager::Scene*> scene
                         break;
                     }
                 }
+                SceneManager::saveSceneToFile(app);
             }
             if (ImGui::MenuItem("Save as")) {
                 saveAsWin = true;
@@ -415,7 +421,8 @@ void renderObjectSettingsButton(std::vector<int>& objectWinIndices, int selected
     ImGui::PopStyleVar();
 }
 
-void renderObjectWindow(Application* app, const int objectIdx, bool& open) {
+void renderObjectWindow(Application* app, int& selected, const int objectIdx,
+                        bool& open) {
     assert(app->m_objects.size() > 0);
     Object* ob = app->m_objects[objectIdx];
     Shape* shape = ob->shape;
@@ -429,6 +436,7 @@ void renderObjectWindow(Application* app, const int objectIdx, bool& open) {
     if (ImGui::Button("Remove", ImVec2{ImGui::GetContentRegionAvail().x - 20, 30})) {
         open = false;
         app->removeObject(app->m_objects[objectIdx]);
+        selected = -1;
     }
     ImGui::PopStyleColor();
     ImGui::PopStyleColor();
