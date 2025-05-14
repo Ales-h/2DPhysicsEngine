@@ -1,13 +1,13 @@
 #include "../header/SpiralGenerator.hpp"
 
-#include "SDL_mouse.h"
+#include "SDL3/SDL_mouse.h"
 
 SpiralGenerator::SpiralGenerator() { magnitude = 10; }
 
 SpiralGenerator::~SpiralGenerator() {}
 
 void SpiralGenerator::ApplyForce(std::vector<Rigidbody*>& rbs) {
-    int x, y = 0;
+    float x, y = 0;
     SDL_GetMouseState(&x, &y);
     Vec2 mousePos = {((double)x)/100, -((double)y)/100};
 

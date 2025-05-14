@@ -1,12 +1,12 @@
 #include "Renderer.hpp"
 
-#include <SDL_pixels.h>
-#include <SDL_render.h>
+#include "SDL3/SDL_pixels.h"
+#include "SDL3/SDL_render.h"
 
 #include <cmath>
 #include <iostream>
 
-SDL_Color getColor(int c) { return sdlColors[c]; }
+SDL_FColor getColor(int c) { return sdlColors[c]; }
 
 Renderer::Renderer(SDL_Renderer* renderer) { sdl_renderer = renderer; }
 
@@ -25,7 +25,7 @@ void Renderer::drawRect(std::array<Vec2, 4>& vertices, int c) {
         throw std::runtime_error("drawRect requires exactly 4 vertices");
     }
     SDL_Vertex sdlVertices[4];
-    SDL_Color color = getColor(c);
+    SDL_FColor color = getColor(c);
 
     for (int i = 0; i < 4; ++i) {
         sdlVertices[i].position = {static_cast<float>(windowX(vertices[i].x)),
@@ -34,25 +34,29 @@ void Renderer::drawRect(std::array<Vec2, 4>& vertices, int c) {
     }
 
     int indices[] = {0, 1, 2, 0, 2, 3};
-    SDL_RenderGeometry(sdl_renderer, nullptr, sdlVertices, 4, indices, 6);
+    bool success = SDL_RenderGeometry(sdl_renderer, nullptr, sdlVertices, 4, indices, 6); 
+
+    if(!success){
+        std::cerr << "Rendering rectangle error: " << SDL_GetError() << '\n';
+    }
 }
 
 void Renderer::drawRectOutline(std::array<Vec2, 4>& vertices, int c) {
-    SDL_Color color = getColor(c);
-    SDL_SetRenderDrawColor(sdl_renderer, color.r, color.g, color.b, color.a);
+    SDL_FColor color = getColor(c);
+    SDL_SetRenderDrawColor(sdl_renderer, color.r * 255, color.g * 255, color.b * 255, color.a);
 
-    SDL_Point sdlPoints[5];
+    SDL_FPoint sdlPoints[5];
     for (int i = 0; i < 4; ++i) {
         sdlPoints[i].x = static_cast<float>(windowX(vertices[i].x));
         sdlPoints[i].y = static_cast<float>(windowY(vertices[i].y));
     }
     sdlPoints[4] = sdlPoints[0];
-    SDL_RenderDrawLines(sdl_renderer, &sdlPoints[0], 5);
+    SDL_RenderLines(sdl_renderer, &sdlPoints[0], 5);
 }
 
 void Renderer::drawCircle(Vec2 pos, double radius, double theta, int c) {
-    SDL_Color color = getColor(c);
-    SDL_SetRenderDrawColor(sdl_renderer, color.r, color.g, color.b, color.a);
+    SDL_FColor color = getColor(c);
+    SDL_SetRenderDrawColor(sdl_renderer, color.r * 255, color.g * 255, color.b * 255, color.a);
 
     int centerX = windowX(pos.x);
     int centerY = windowY(pos.y);
@@ -61,13 +65,13 @@ void Renderer::drawCircle(Vec2 pos, double radius, double theta, int c) {
     int d = 1 - windowLength(radius);
 
     while (x <= y) {
-        SDL_RenderDrawLine(sdl_renderer, centerX - x, centerY - y, centerX + x,
+        SDL_RenderLine(sdl_renderer, centerX - x, centerY - y, centerX + x,
                            centerY - y);
-        SDL_RenderDrawLine(sdl_renderer, centerX - x, centerY + y, centerX + x,
+        SDL_RenderLine(sdl_renderer, centerX - x, centerY + y, centerX + x,
                            centerY + y);
-        SDL_RenderDrawLine(sdl_renderer, centerX - y, centerY - x, centerX + y,
+        SDL_RenderLine(sdl_renderer, centerX - y, centerY - x, centerX + y,
                            centerY - x);
-        SDL_RenderDrawLine(sdl_renderer, centerX - y, centerY + x, centerX + y,
+        SDL_RenderLine(sdl_renderer, centerX - y, centerY + x, centerX + y,
                            centerY + x);
 
         if (d < 0) {
@@ -80,12 +84,12 @@ void Renderer::drawCircle(Vec2 pos, double radius, double theta, int c) {
     }
     double r = windowLength(radius);
     SDL_SetRenderDrawColor(sdl_renderer, 0, 0, 0, 125);
-    SDL_RenderDrawLine(sdl_renderer, centerX, centerY, centerX + std::sin(theta) * r,
+    SDL_RenderLine(sdl_renderer, centerX, centerY, centerX + std::sin(theta) * r,
                        centerY + std::cos(theta) * r);
 }
 void Renderer::drawCircleOutline(Vec2 pos, double radius, int c) {
-    SDL_Color color = getColor(c);
-    SDL_SetRenderDrawColor(sdl_renderer, color.r, color.g, color.b, color.a);
+    SDL_FColor color = getColor(c);
+    SDL_SetRenderDrawColor(sdl_renderer, color.r * 255, color.g * 255, color.b * 255, color.a * 255);
 
     int centerX = windowX(pos.x);
     int centerY = windowY(pos.y);
@@ -94,14 +98,14 @@ void Renderer::drawCircleOutline(Vec2 pos, double radius, int c) {
     int d = 1 - windowLength(radius);
 
     while (x <= y) {
-        SDL_RenderDrawPoint(sdl_renderer, centerX + x, centerY + y);
-        SDL_RenderDrawPoint(sdl_renderer, centerX - x, centerY + y);
-        SDL_RenderDrawPoint(sdl_renderer, centerX + x, centerY - y);
-        SDL_RenderDrawPoint(sdl_renderer, centerX - x, centerY - y);
-        SDL_RenderDrawPoint(sdl_renderer, centerX + y, centerY + x);
-        SDL_RenderDrawPoint(sdl_renderer, centerX - y, centerY + x);
-        SDL_RenderDrawPoint(sdl_renderer, centerX + y, centerY - x);
-        SDL_RenderDrawPoint(sdl_renderer, centerX - y, centerY - x);
+        SDL_RenderPoint(sdl_renderer, centerX + x, centerY + y);
+        SDL_RenderPoint(sdl_renderer, centerX - x, centerY + y);
+        SDL_RenderPoint(sdl_renderer, centerX + x, centerY - y);
+        SDL_RenderPoint(sdl_renderer, centerX - x, centerY - y);
+        SDL_RenderPoint(sdl_renderer, centerX + y, centerY + x);
+        SDL_RenderPoint(sdl_renderer, centerX - y, centerY + x);
+        SDL_RenderPoint(sdl_renderer, centerX + y, centerY - x);
+        SDL_RenderPoint(sdl_renderer, centerX - y, centerY - x);
 
         if (d < 0) {
             d += 2 * x + 3;
@@ -117,7 +121,7 @@ void Renderer::drawCollisionPoints(std::vector<Vec2>& cps) {
     SDL_SetRenderDrawColor(sdl_renderer, 255, 165, 0, 255);
     const int boxSize = 10;
     for (const Vec2& cp : cps) {
-        SDL_Rect rect;
+        SDL_FRect rect;
         rect.x = windowX(cp.x) - boxSize / 2;  // Center the box
         rect.y = windowY(cp.y) - boxSize / 2;
         rect.w = boxSize;
@@ -134,11 +138,11 @@ void Renderer::drawArrow(Vec2 pos, Vec2 dir, double magnitude) {
     Vec2 normalizedDir = dir.normalize();
     Vec2 end = {pos.x + normalizedDir.x * magnitude, pos.y + normalizedDir.y * magnitude};
 
-    SDL_RenderDrawLine(sdl_renderer, windowX(pos.x), windowY(pos.y), windowX(end.x),
+    SDL_RenderLine(sdl_renderer, windowX(pos.x), windowY(pos.y), windowX(end.x),
                        windowY(end.y));
 
-    double arrowHeadLength = 0.1;
-    double arrowHeadAngle = M_PI / 6;
+    constexpr double arrowHeadLength = 0.1;
+    constexpr double arrowHeadAngle = 3.1415926 / 6;
 
     Vec2 left = {end.x - arrowHeadLength * (std::cos(arrowHeadAngle) * normalizedDir.x -
                                             std::sin(arrowHeadAngle) * normalizedDir.y),
@@ -151,8 +155,8 @@ void Renderer::drawArrow(Vec2 pos, Vec2 dir, double magnitude) {
         end.y - arrowHeadLength * (std::sin(-arrowHeadAngle) * normalizedDir.x +
                                    std::cos(-arrowHeadAngle) * normalizedDir.y)};
 
-    SDL_RenderDrawLine(sdl_renderer, windowX(end.x), windowY(end.y), windowX(left.x),
+    SDL_RenderLine(sdl_renderer, windowX(end.x), windowY(end.y), windowX(left.x),
                        windowY(left.y));
-    SDL_RenderDrawLine(sdl_renderer, windowX(end.x), windowY(end.y), windowX(right.x),
+    SDL_RenderLine(sdl_renderer, windowX(end.x), windowY(end.y), windowX(right.x),
                        windowY(right.y));
 }

@@ -1,8 +1,14 @@
 .clangd
 /build
+/out
 .DS_Store
 /.cache
 .cache
 !/scenes/userScenes/.gitkeep
-
 error.txt
+/.vs
+.idea/
+CMakeSettings.json
+Makefile
+compile_commands.json
+.clang-format

@@ -1,11 +1,11 @@
 #include "Events.hpp"
 
-#include <SDL_timer.h>
+#include "SDL3/SDL_timer.h"
 
 #include <iostream>
 
 #include "Application.hpp"
-#include "backends/imgui_impl_sdl2.h"
+#include "backends/imgui_impl_sdl3.h"
 
 namespace Events {
 
@@ -15,17 +15,18 @@ void handleEvents(Application* app, bool& isRunning, int& selected) {
     static SpiralGenerator* spiralGen = nullptr;
 
     while (SDL_PollEvent(&event)) {
-        ImGui_ImplSDL2_ProcessEvent(&event);
+        ImGui_ImplSDL3_ProcessEvent(&event);
+        
         if (ImGui::GetIO().WantCaptureMouse) {
             continue;
         }
 
         switch (event.type) {
-            case SDL_QUIT:
+            case SDL_EVENT_QUIT:
                 isRunning = false;
                 std::exit(0);
                 break;
-            case SDL_MOUSEBUTTONDOWN:
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
                     if (!isMouseHeld && !(app->appFlags & AppFlags_iSSimulationRunning)) {
                         selected = clickedOnObject(app);
@@ -42,7 +43,7 @@ void handleEvents(Application* app, bool& isRunning, int& selected) {
                     }
                 }
                 break;
-            case SDL_MOUSEBUTTONUP:
+            case SDL_EVENT_MOUSE_BUTTON_UP:
                 if (event.button.button == SDL_BUTTON_LEFT) {
                     isMouseHeld = false;
                 }
@@ -58,7 +59,7 @@ void handleEvents(Application* app, bool& isRunning, int& selected) {
 }
 
 int clickedOnObject(Application* app) {
-    int x, y = 0;
+    float x, y = 0;
     SDL_GetMouseState(&x, &y);
     Vec2 mousePos = Vec2{((double)x) / 100, -((double)y) / 100};
 
@@ -73,7 +74,7 @@ int clickedOnObject(Application* app) {
 void spawnEvent(Application* app) {
     static Uint64 time = 0;
     if (SDL_GetPerformanceCounter() - time > 1500 || time == 0) {
-        int x, y = 0;
+        float x, y = 0;
         SDL_GetMouseState(&x, &y);
         Vec2 mousePos = Vec2{((double)x) / 100, -((double)y) / 100};
 

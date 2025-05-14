@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include "SDL3/SDL.h"
 // #include <SDL_ttf.h>
 
 #include <iostream>
@@ -9,10 +9,6 @@
 
 int main(int argc, char* args[]) {
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        SDL_Log("Failed to initialize SDL: %s", SDL_GetError());
-        return -1;
-    }
 
     Application* app = new Application();
     app->run();

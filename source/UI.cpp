@@ -5,8 +5,9 @@
 
 #include "Application.hpp"
 #include "GravityGenerator.hpp"
-#include "SDL.h"
-#include "SDL_image.h"
+#include "SDL3/SDL.h"
+
+#include "SDL3_image/SDL_image.h"
 #include "SceneManager.hpp"
 #include "imgui.h"
 
@@ -33,23 +34,23 @@ static SDL_Texture* spiralTexture;
 static SDL_Texture* spawnTexture;
 
 void initUI(SDL_Renderer* renderer) {
-    pauseTexture = loadTexture(renderer, "../assets/icons/pause.png");
-    resumeTexture = loadTexture(renderer, "../assets/icons/resume.png");
-    resetTexture = loadTexture(renderer, "../assets/icons/reset.png");
-    editTexture = loadTexture(renderer, "../assets/icons/edit.png");
-    settingTexture = loadTexture(renderer, "../assets/icons/setting.png");
-    moveTexture = loadTexture(renderer, "../assets/icons/move.png");
-    spiralTexture = loadTexture(renderer, "../assets/icons/magnet.png");
-    spawnTexture = loadTexture(renderer, "../assets/icons/spawn.png");
+    pauseTexture = loadTexture(renderer, "./assets/icons/pause.png");
+    resumeTexture = loadTexture(renderer, "./assets/icons/resume.png");
+    resetTexture = loadTexture(renderer, "./assets/icons/reset.png");
+    editTexture = loadTexture(renderer, "./assets/icons/edit.png");
+    settingTexture = loadTexture(renderer, "./assets/icons/setting.png");
+    moveTexture = loadTexture(renderer, "./assets/icons/move.png");
+    spiralTexture = loadTexture(renderer, "./assets/icons/magnet.png");
+    spawnTexture = loadTexture(renderer, "./assets/icons/spawn.png");
 }
 
 SDL_Texture* loadTexture(SDL_Renderer* renderer, std::string path) {
     SDL_Surface* surf = IMG_Load(path.c_str());
     if (!surf) {
-        std::cerr << "Failed to load image " << path << ": " << IMG_GetError() << '\n';
+        std::cerr << "Failed to load image " << path << ": " << SDL_GetError() << '\n';
     }
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surf);
-    SDL_FreeSurface(surf);
+    SDL_DestroySurface(surf);
     return texture;
 }
 
@@ -88,7 +89,7 @@ void renderSceneSelectWindow(Application* app,
         // textureScenePreview = fullsizeTexture;
         SDL_SetRenderTarget(app->m_renderer->sdl_renderer, textureScenePreview);
 
-        SDL_RenderCopy(app->m_renderer->sdl_renderer, fullsizeTexture, NULL, NULL);
+        SDL_RenderTexture(app->m_renderer->sdl_renderer, fullsizeTexture, NULL, NULL);
         SDL_SetRenderTarget(app->m_renderer->sdl_renderer, nullptr);
     }
 

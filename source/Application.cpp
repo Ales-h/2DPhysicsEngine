@@ -1,8 +1,8 @@
 #include "../header/Application.hpp"
 
-#include <SDL_render.h>
-#include <SDL_timer.h>
-#include <SDL_video.h>
+#include "SDL3/SDL_render.h"
+#include "SDL3/SDL_timer.h"
+#include "SDL3/SDL_video.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -12,30 +12,30 @@
 #include "Object.hpp"
 #include "SceneManager.hpp"
 #include "UI.hpp"
-#include "backends/imgui_impl_sdl2.h"
-#include "backends/imgui_impl_sdlrenderer2.h"
+#include "backends/imgui_impl_sdl3.h"
+#include "backends/imgui_impl_sdlrenderer3.h"
 #include "imgui.h"
 
 Application::Application(int _fps) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        SDL_Log("Failed to initialize SDL: %s", SDL_GetError());
-        std::exit(-1);
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
+        SDL_Log("Failed to initialize SDL: ");
+        std::cerr << SDL_GetError() << '\n';
+        std::exit(-12);
     }
 
     // Create an SDL window
     SDL_Window* window =
-        SDL_CreateWindow("2D Physics Simulation", SDL_WINDOWPOS_CENTERED,
-                         SDL_WINDOWPOS_CENTERED, 1200, 800, SDL_WINDOW_SHOWN);
+        SDL_CreateWindow("2D Physics Simulation", 1200, 800, SDL_WINDOW_FULLSCREEN);
     if (!window) {
         SDL_Log("Failed to create window: %s", SDL_GetError());
         SDL_Quit();
         std::exit(-1);
     }
-    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
     SDL_Renderer* renderer = SDL_CreateRenderer(
-        window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!m_renderer) {
-        SDL_Log("Failed to create m_renderer: %s", SDL_GetError());
+        window, nullptr);
+    if (!renderer) {
+        SDL_Log("Failed to create SDL renderer: %s", SDL_GetError());
         SDL_DestroyWindow(window);
         SDL_Quit();
         std::exit(-1);
@@ -153,7 +153,6 @@ void Application::render() {
 }
 
 void Application::run() {
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
     bool isRunning = true;
     bool isSimulationRunning = false;
@@ -178,8 +177,8 @@ void Application::run() {
     std::vector<SceneManager::Scene*> scenes = SceneManager::loadScenes();
     UI::initUI(m_renderer->sdl_renderer);
 
-    ImGui_ImplSDL2_InitForSDLRenderer(m_window, m_renderer->sdl_renderer);
-    ImGui_ImplSDLRenderer2_Init(m_renderer->sdl_renderer);
+    ImGui_ImplSDL3_InitForSDLRenderer(m_window, m_renderer->sdl_renderer);
+    ImGui_ImplSDLRenderer3_Init(m_renderer->sdl_renderer);
     while (isRunning) {
         current = SDL_GetPerformanceCounter();
         if (isSimulationRunning) {
@@ -189,8 +188,8 @@ void Application::run() {
         }
         Events::handleEvents(this, isRunning, selectedObjectID);
 
-        ImGui_ImplSDLRenderer2_NewFrame();
-        ImGui_ImplSDL2_NewFrame();
+        ImGui_ImplSDLRenderer3_NewFrame();
+        ImGui_ImplSDL3_NewFrame();
         ImGui::NewFrame();
 
         if (isSimulationRunning) {
@@ -240,7 +239,7 @@ void Application::run() {
                                            tmp->rigidbody->pos);
         }
         ImGui::Render();
-        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(),
+        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(),
                                               m_renderer->sdl_renderer);
         SDL_RenderPresent(m_renderer->sdl_renderer);
 
@@ -253,7 +252,11 @@ void Application::run() {
             }
         }
     }
-    ImGui_ImplSDLRenderer2_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
+    ImGui_ImplSDLRenderer3_Shutdown();
+    ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
+
+    SDL_DestroyRenderer(m_renderer->sdl_renderer);
+    SDL_DestroyWindow(m_window);
+    SDL_Quit();
 }

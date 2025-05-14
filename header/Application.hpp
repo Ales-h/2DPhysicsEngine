@@ -1,7 +1,7 @@
 #ifndef PHYSOLVER_APPLICATION_HPP
 #define PHYSOLVER_APPLICATION_HPP
 
-#include <SDL.h>
+#include "SDL3/SDL.h"
 
 #include "CollisionResolver.hpp"
 #include "Object.hpp"

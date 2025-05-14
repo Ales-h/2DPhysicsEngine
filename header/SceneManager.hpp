@@ -2,6 +2,7 @@
 #define PHYSOLVER_SCENE_MANAGER_HPP
 
 #include <vector>
+#include <filesystem>
 
 #include "Application.hpp"
 #include "json.hpp"
@@ -14,7 +15,7 @@ struct Scene {
     std::vector<Object*> objects;
 };
 
-static std::filesystem::path SCENES_PATH = std::filesystem::path("../scenes/userScenes/");
+static std::filesystem::path SCENES_PATH = std::filesystem::path("./scenes/userScenes/");
 
 std::vector<Scene*> loadScenes();
 void clearScenes(std::vector<Scene*> scenes);               // proper clean up
