@@ -11,7 +11,7 @@
 // Color refactor
 enum Color { GREEN, BLUE, PURPLE, YELLOW, RED, SIZE };
 
-constexpr SDL_FColor sdlColors[SIZE] = {
+static constexpr SDL_FColor sdlColors[SIZE] = {
     SDL_FColor{70.0f / 255.0f, 255.0f / 255.0f, 178.0f / 255.0f, 1.0f}, // Green
     SDL_FColor{68.0f / 255.0f, 200.0f / 255.0f, 252.0f / 255.0f, 1.0f}, // Blue
     SDL_FColor{183.0f / 255.0f, 124.0f / 255.0f, 255.0f / 255.0f,

@@ -1,6 +1,7 @@
 #include "../header/Object.hpp"
 
 #include <iostream>
+#include <math.h>
 
 #include "../header/Application.hpp"
 #include "circleShape.hpp"

@@ -1,6 +1,6 @@
 {
     "gravity": true,
-    "name": "scene1",
+    "name": "fdasf",
     "objectCount": 8,
     "objects": {
         "object0": {
@@ -136,7 +136,7 @@
             "type": 0
         },
         "object7": {
-            "color": 0,
+            "color": 3,
             "id": 7,
             "shape": {
                 "radius": 0.3,

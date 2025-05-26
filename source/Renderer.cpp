@@ -34,7 +34,7 @@ void Renderer::drawRect(std::array<Vec2, 4>& vertices, int c) {
     }
 
     int indices[] = {0, 1, 2, 0, 2, 3};
-    bool success = SDL_RenderGeometry(sdl_renderer, nullptr, sdlVertices, 4, indices, 6); 
+    bool success = SDL_RenderGeometry(sdl_renderer, nullptr, sdlVertices, 4, indices, 6);
 
     if(!success){
         std::cerr << "Rendering rectangle error: " << SDL_GetError() << '\n';
@@ -43,7 +43,7 @@ void Renderer::drawRect(std::array<Vec2, 4>& vertices, int c) {
 
 void Renderer::drawRectOutline(std::array<Vec2, 4>& vertices, int c) {
     SDL_FColor color = getColor(c);
-    SDL_SetRenderDrawColor(sdl_renderer, color.r * 255, color.g * 255, color.b * 255, color.a);
+    SDL_SetRenderDrawColorFloat(sdl_renderer, color.r , color.g , color.b , color.a);
 
     SDL_FPoint sdlPoints[5];
     for (int i = 0; i < 4; ++i) {
@@ -56,7 +56,8 @@ void Renderer::drawRectOutline(std::array<Vec2, 4>& vertices, int c) {
 
 void Renderer::drawCircle(Vec2 pos, double radius, double theta, int c) {
     SDL_FColor color = getColor(c);
-    SDL_SetRenderDrawColor(sdl_renderer, color.r * 255, color.g * 255, color.b * 255, color.a);
+    std::cout << color.r * 255 << ' ' << color.g << '\n';
+    SDL_SetRenderDrawColorFloat(sdl_renderer, color.r , color.g , color.b , color.a);
 
     int centerX = windowX(pos.x);
     int centerY = windowY(pos.y);
@@ -89,7 +90,7 @@ void Renderer::drawCircle(Vec2 pos, double radius, double theta, int c) {
 }
 void Renderer::drawCircleOutline(Vec2 pos, double radius, int c) {
     SDL_FColor color = getColor(c);
-    SDL_SetRenderDrawColor(sdl_renderer, color.r * 255, color.g * 255, color.b * 255, color.a * 255);
+    SDL_SetRenderDrawColorFloat(sdl_renderer, color.r , color.g , color.b , color.a);
 
     int centerX = windowX(pos.x);
     int centerY = windowY(pos.y);
