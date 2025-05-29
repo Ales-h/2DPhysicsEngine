@@ -1,6 +1,6 @@
 
 # 2DPhysicsEngine
-This learning project serves as an introduction to implementing physics engines. It simulates simple mechanics in 2-Dimensions like motion, collision detection, collision resolution.
+This learning project served me as an introduction to implementing physics engines. It simulates simple mechanics in 2-Dimensions. The engine includes motion, collision detection, collision resolution.
 
 
 
